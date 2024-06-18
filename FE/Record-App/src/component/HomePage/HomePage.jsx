@@ -1,8 +1,7 @@
 import React from 'react'
 import SideBar from './SideBar'
 import Header from './Header'
-import Main from './Main'
-import ParticipantRecordApp from './ParticipantRecordApp'
+import MainPage from './MainPage'
 
 const HomePage = () => {
  
@@ -13,16 +12,13 @@ const HomePage = () => {
           <SideBar />
         </div>
         <div className='w-4/5  relative'>
-          <div className='fixed top-0 left-50 w-full h-44  lg:h-28 bg-white border-b border-[#729BC7]'>
+          <div className='fixed top-0 left-50 w-full h-15p sm:h-1/5 lg:h-17p xl:h-16p  bg-white border-b border-[#729BC7] justify-center items-center'>
+          
             <Header />
 
           </div>
-          <div className='mt-44 lg:mt-28 '>
-            <div className='mt-8 h-3/6'>
-          {/* <Main/> */}
-          <ParticipantRecordApp/>
-
-            </div>
+          <div className='mt-48 lg:mt-36 lg:h-85p h-4/5 '>
+          <MainPage/>
           </div>
 
         </div>

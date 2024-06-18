@@ -4,38 +4,28 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import LoginPage from './component/LoginPage'
 import HomePage from './component/HomePage/HomePage'
-<<<<<<< HEAD
 import Login from './component/Login'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NoPage from './component/HomePage/NoPage'
+import ParticipantRecordApp from './component/HomePage/ParticipantRecordApp'
+import Profile from './component/HomePage/Profile'
+import MainPage from './component/HomePage/MainPage'
 
-=======
-import Main from './component/HomePage/Main'
-import MainPage from './component/MainPage'
-import ParticipantProfile from './component/ParticipantProfile'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
->>>>>>> main
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
     <BrowserRouter>
-
     <Routes>
-        <Route path="/login" element={<LoginPage/>} />
-        <Route path="/home" element={<HomePage />} /> 
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/profile" element={<ParticipantProfile />} />
+        <Route index element={<Login/>} />
+        <Route path='/home' element={<HomePage />} /> 
+        {/* <Route path="/main" element={<MainPage />} /> */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/participantApp" element={<ParticipantRecordApp />} />
+        <Route path="*" element={<NoPage />} />
     </Routes>
 
     </BrowserRouter>
-      {/* <LoginPage/> */}
-<<<<<<< HEAD
-      <Login/>
-      {/* <HomePage/> */}
-=======
-
-      
->>>>>>> main
     </>
   )
 }

@@ -32,15 +32,13 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#0D5299",
     color: theme.palette.common.white,
-    fontSize:20,
+    fontSize:24,
     letterSpacing:"2px",
-    // fontWeight: 100, 
-    
-    
+    // fontWeight: 100,     
     
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 18,
+    fontSize: 20,
   },
 }));
 
@@ -53,11 +51,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-
-
 const CustomeTable = ({title}) => {
-  console.log("🚀 ~ CustomeTable ~ title:", title[0])
   return (
     <div className=''>
        <StyledTableContainer component={Paper}  >
@@ -71,8 +65,7 @@ const CustomeTable = ({title}) => {
            
           </TableRow>
         </TableHead>
-        <TableBody>
-       
+        <TableBody>       
           {title[0].name?.map((_,index)=>(           
              <StyledTableRow key={index}>
               {title.map((d)=>(
