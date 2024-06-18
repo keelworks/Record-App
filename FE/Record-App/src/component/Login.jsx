@@ -1,8 +1,15 @@
 import React from 'react'
 import Logo from "../assets/LOGO.png"
 import google from '../assets/google-icon.png'
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate=useNavigate()
+  const handleClick=()=>{
+    navigate("/home")
+
+
+  }
   return (
     <div>
 
@@ -24,18 +31,18 @@ const Login = () => {
               <div className='w-4/5 mb-6 mt-4'>
                 <label htmlFor="" className='text-[16px] text-[#000000] '>Enter your email</label>
                 <input type="text" placeholder='demo@gmail.com' className='w-full border rounded-md p-4 border-black focus:outline-none mt-2 
-            text-[#B1BECD]' />
+            text-[#B1BECD] text-[18px]' />
               </div>
 
               {/* Password Input */}
               <div className='w-4/5 mb-6'>
                 <label htmlFor="" className='text-[16px] text-[#000000]'>Enter your password</label>
-                <input type="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2' />
+                <input type="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2  text-[18px]' />
               </div>
 
               {/* Login Button */}
               <div className='w-4/5 mb-2'>
-                <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] '>Log in</button>
+                <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] ' onClick={handleClick}>Log in</button>
               </div>
              
               <div className='w-4/5 mb-4'>
