@@ -34,11 +34,11 @@ const ParticipantRecordApp = () => {
         <SideBar />
       </div>
       <div className='w-4/5  relative'>
-        <div className='fixed top-0 left-50 w-full h-15p sm:h-1/5 lg:h-17p xl:h-16p justify-center items-centerbg-white border-b border-[#729BC7]'>
+        <div className='fixed top-0 left-50 w-full h-16p sm:h-1/5 lg:h-17p xl:h-16p justify-center items-centerbg-white border-b border-[#729BC7]'>
           <Header />
 
         </div>
-        <div className='mt-48 lg:mt-36 lg:h-85p h-4/5 '>
+        <div className='mt-48 lg:mt-40 lg:h-85p h-4/5 '>
             <div className='mt-8'>
               <div className='flex flex-col md:flex-row lg:flex-row items-center justify-between w-full  mb-12'>
                 <div className='w-full md:w-3/5 lg:w-3/5 mt-4 ml-8 '>
@@ -46,10 +46,10 @@ const ParticipantRecordApp = () => {
                 </div>
                 <div className='flex w-full md:w-2/5 lg:w-2/5  justify-start items-center text-center md:justify-center lg:justify-center mt-4  ml-8'>
                   <div className='bg-[#5DAE6F] w-[89px] h-[48px] flex justify-center items-center border rounded-lg  mr-4'>
-                    <img src={edit} alt="" className='w-[20px] h-[20px]' />
+                    <img src={edit} alt="" className='w-[24px] h-[24px]' />
                   </div>
                   <div className='bg-[#EE8A8A] w-[89px] h-[48px] flex justify-center items-center border rounded-lg '>
-                    <img src={download} alt="" className='w-[20px] h-[20px]'/>
+                    <img src={download} alt="" className='w-[24px] h-[24px]'/>
                   </div>
                 </div>
               </div>
