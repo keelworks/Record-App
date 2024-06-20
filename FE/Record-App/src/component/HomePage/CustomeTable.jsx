@@ -4,7 +4,7 @@ import React from 'react'
 
 const StyledTable = styled(Table)(({ theme }) => ({
   width: '100%',
-  borderRadius:"23px",
+  borderRadius:"24px",
   overflow:"hidden",
   fontFamily:"Montserrat, sans-serif",
   letterSpacing:"2px"
@@ -48,35 +48,36 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
   // hide last border
   '&:last-child td, &:last-child th': {
-    border: 0,
+    border: 1,
   },
 }));
 const CustomeTable = ({title}) => {
   return (
-    <div className=''>
-       <StyledTableContainer component={Paper}  >
-      <StyledTable  aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            {title.map((d)=>(             
-               <StyledTableCell align="left">{d.label}</StyledTableCell>
-              )
-            )}
-           
-          </TableRow>
-        </TableHead>
-        <TableBody>       
-          {title[0].name?.map((_,index)=>(           
-             <StyledTableRow key={index}>
-              {title.map((d)=>(
-                <StyledTableCell key={d.label + index}>{d.name[index]}</StyledTableCell>
+  <div className="overflow-x-auto">
+      <StyledTableContainer component={Paper}>
+        <StyledTable aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              {title.map((d) => (
+                <StyledTableCell align="left" key={d.label}>
+                  {d.label}
+                </StyledTableCell>
               ))}
-             </StyledTableRow>
-
-          ))}
-        </TableBody>
-      </StyledTable >
-    </StyledTableContainer>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {title[0].name?.map((_, index) => (
+              <StyledTableRow key={index}>
+                {title.map((d) => (
+                  <StyledTableCell key={d.label + index}>
+                    {d.name[index]}
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </StyledTable>
+      </StyledTableContainer>
     </div>
   )
 }

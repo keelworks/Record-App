@@ -50,3 +50,6 @@
   font-style: normal;
   /* overflow: hidden; */
 }
+.custom-progress-bar .rs-progress-info-status {
+  display: none;
+}
