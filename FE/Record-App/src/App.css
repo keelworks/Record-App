@@ -53,3 +53,14 @@
 .custom-progress-bar .rs-progress-info-status {
   display: none;
 }
+.css-1fdymww-MuiStepLabel-root{
+  align-items: start !important;
+}
+.css-1vyamtt-MuiStepLabel-labelContainer.MuiStepLabel-alternativeLabel {
+  text-align: start !important;
+}
+.css-1wb7f38-MuiStepConnector-roo{
+  left: calc(-100% + 20px) !important;
+  right: calc(50% + 20px) !important;
+
+}

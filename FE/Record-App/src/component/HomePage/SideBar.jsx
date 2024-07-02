@@ -12,9 +12,9 @@ const SideBar = () => {
         </div>
         <div className='mt-8'>
           <ul className='font-sans  text-[#000000] lg:text-[24px] text-[20px]'>
-            <li className='mt-2 cursor-pointer' onClick={()=>navigate("/home")}>Home Page</li>
-            <li className='mt-2 cursor-pointer' onClick={()=>navigate("/profile")}>All team</li>
-            <li className='mt-2 cursor-pointer' onClick={()=>navigate("/participantApp")}>All Participants</li> 
+            <li className='mt-2 cursor-pointer' >Home Page</li>
+            <li className='mt-2 cursor-pointer'>All team</li>
+            <li className='mt-2 cursor-pointer' >All Participants</li> 
           </ul>
         </div>
       </div>

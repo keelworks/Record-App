@@ -73,6 +73,10 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 22,
   },
+  [`&.${stepConnectorClasses.root}`]: {
+    left: 'calc(-86% + 20px) !important',
+    right: 'calc(85% + 20px) !important',
+  },
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundColor: '#0D5299',
@@ -88,7 +92,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     height: 3,
     border: 0,
     backgroundColor:
-      theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+    theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
     borderRadius: 1,
   },
 }));
@@ -114,6 +118,7 @@ const Profile = ({ activeStep }) => {
     "Project Assignment",
     "job Hunting",
     "Interviews",
+   
   ]
   const { value: value2, reset } = useCountUp({
     isCounting: true,
@@ -146,11 +151,11 @@ const Profile = ({ activeStep }) => {
         </div>
         <div className='mt-52 sm:mt-48 md:mt-40 h-auto w-full  '>
           <div className='h-auto text-[16px] text-black   w-full  '>
-            <p className='md:ml-8 p-4 '>Record App / Participants Profile</p>
+            <p className='md:ml-8 py-4 '>Record App / Participants Profile</p>
           </div>
           <div className='flex flex-col md:flex-row lg:flex-row items-center justify-between w-full  mb-8 h-auto  '>
             <div className='w-full md:w-3/5 lg:w-3/5 mt-4 lg:mt-0 md:mx-8 '>
-              <span className='font-semibold text-3xl sm:text-3xl lg:text-[40px] text-black' ><FontAwesomeIcon icon={faLessThan} className='text-black w-[24px] h-[24px] mr-3 mb-1' />
+              <span className='font-semibold text-3xl sm:text-3xl ml-4 md:ml-0 lg:text-[40px] text-black' ><FontAwesomeIcon icon={faLessThan} className='text-black w-[24px] h-[24px] mr-3 mb-1' />
                 Gaurav Patil</span>
             </div>
             <div className='flex w-full md:w-2/5 lg:w-2/5  justify-start items-center text-center md:justify-center lg:justify-center mt-4 md:mt-0  ml-8'>
@@ -170,7 +175,7 @@ const Profile = ({ activeStep }) => {
               </div>
             </div>
           </div>
-          <div className='w-full my-14 '>
+          <div className='w-full my-14 px-8 '>
             <Stepper alternativeLabel activeStep={1} connector={<ColorlibConnector />}>
               {steps.map((label) => (
                 <Step key={label} >
@@ -434,10 +439,7 @@ const Profile = ({ activeStep }) => {
                         <Progress.Line percent={70} vertical={false} strokeColor="#3D965C" />
                       </div>
                     </div>
-
                   </div>
-
-
                 </div>
               </div>
             </div>
@@ -449,7 +451,6 @@ const Profile = ({ activeStep }) => {
               <div className='bg-[#8677A7] p-4 text-left text-white font-normal text-[24px] tracking-wider rounded-t-2xl '>
                 History
               </div>
-
               <div className='pb-2'>
                 <div className='p-6 text-[24px] text-black'>
                   <p>Gaurav Patil is an ambitious and highly qualified international student from Pune, India, holding a dual degree in Computer Science and an MBA from a prestigious U.S. university. </p>

@@ -5,27 +5,51 @@ import './App.css'
 import LoginPage from './component/LoginPage'
 import HomePage from './component/HomePage/HomePage'
 import Login from './component/Login'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NoPage from './component/HomePage/NoPage'
 import ParticipantRecordApp from './component/HomePage/ParticipantRecordApp'
 import Profile from './component/HomePage/Profile'
 import MainPage from './component/HomePage/MainPage'
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from 'react-toastify';
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Error from './pages/Error'
 
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Login />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/home',
+    element: <HomePage />,
+  },
+  {
+    path: '/profile',
+    element: <Profile />,
+  },
+  {
+    path: '/participantApp',
+    element: <ParticipantRecordApp />,
+  },
+]);
 function App() {
-
   return (
     <>
-    <BrowserRouter>
-    <Routes>
-        <Route index element={<Login/>} />
-        <Route path='/home' element={<HomePage />} /> 
-        {/* <Route path="/main" element={<MainPage />} /> */}
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/participantApp" element={<ParticipantRecordApp />} />
-        <Route path="*" element={<NoPage />} />
-    </Routes>
-
-    </BrowserRouter>
+      <main >
+        <RouterProvider router={router} />
+      </main>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   )
 }
