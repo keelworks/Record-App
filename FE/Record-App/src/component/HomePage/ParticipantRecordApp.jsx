@@ -25,8 +25,6 @@ const ParticipantRecordApp = () => {
     }
   ];
 
-
-
   return (
 
     <div className='flex min-h-screen'>
@@ -55,7 +53,6 @@ const ParticipantRecordApp = () => {
               </div>
               <div><CustomeTable title={tableRecord} /></div>
             </div>
-
           </div>
 
       </div>
