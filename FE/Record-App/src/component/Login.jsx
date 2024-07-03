@@ -78,7 +78,7 @@ const Login = () => {
 
         {/* Login details */}
         <form action="" onSubmit={handleSubmit}>
-          <div className=' w-full flex justify-center items-center  h-2/3  '>
+          <div className=' w-full flex justify-center items-center  h-2/3'>
             <div className='w-full max-w-md h-full border-black rounded-md flex flex-col items-center  '>
 
               {/* Email Input */}
