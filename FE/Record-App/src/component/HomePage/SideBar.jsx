@@ -5,8 +5,9 @@ import {useNavigate} from 'react-router-dom'
 const SideBar = () => {
   const navigate = useNavigate()
   return (
-    <div className='flex  h-full flex-col fixed '>
-      <div className='m-2 h-2/4 md:m-2 xl:m-8 lg:m-4'>
+    <div className='min-w-40 lg:w-1/5 border-r border-[#729BC7] flex-shrink-0 '>
+    <div className='flex h-full flex-col fixed '>
+      <div className='m-2 h-2/4 xl:m-8 lg:m-4'>
         <div className=''>
           <img src={homeLogo} alt="" className='w-2/4 h-1/2  lg:w-3/4 lg:h-3/4' />
         </div>
@@ -31,6 +32,7 @@ const SideBar = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }

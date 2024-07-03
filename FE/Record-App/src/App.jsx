@@ -36,7 +36,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <main >
+      <main>
         <RouterProvider router={router} />
       </main>
       <ToastContainer

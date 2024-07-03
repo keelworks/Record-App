@@ -12,8 +12,8 @@ const StyledTable = styled(Table)(({ theme }) => ({
   
 }));
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-  width: '70%',
-  margin: '10px 30px',
+  width: '100%',
+  // margin: '10px 20px',
   border: '1px solid black',
   borderRadius: '25px',
   fontFamily: "Montserrat, sans-serif",

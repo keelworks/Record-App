@@ -6,7 +6,7 @@ import { Avatar } from '@mui/material'
 const Header = () => {
   return (
   
-    <div className='flex md:flex-col lg:flex-row flex-col   bg-white fixed w-4/5 lg:mt-8  '>
+    <div className='flex md:flex-col lg:flex-row flex-col   bg-white fixed w-4/5 lg:mt-8  mx-[4rem]  '>
       <div className='w-3/4 ml-2 sm:ml-4 lg:w-3/5 xl:w-3/4'>
         <div className='w-4/5  border rounded-md border-gray-200 m-4 p-3 flex'>
           <div>
