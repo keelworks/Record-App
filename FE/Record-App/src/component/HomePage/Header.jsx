@@ -26,8 +26,8 @@ const Header = () => {
           <p className='font-semibold lg:text-[24px] md:text-xl sm:text-sm'>Anna Taylor</p>
           <p className='text-base sm:text-[16px] mt-0'>annataylor@keelworks.com</p>
         </div>
-
       </div>
+     
     </div>
   )
 }

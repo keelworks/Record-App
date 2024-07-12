@@ -1,9 +1,17 @@
 import React from 'react'
 import homeLogo from '../../assets/home-logo.png'
 import {useNavigate} from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const SideBar = () => {
   const navigate = useNavigate()
+
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    toast.success('Successfully logged out!');
+    navigate('/'); // Redirect to the login page
+  };
   return (
     <div className='min-w-40 lg:w-1/5 border-r border-[#729BC7] flex-shrink-0 '>
     <div className='flex h-full flex-col fixed '>
@@ -28,7 +36,7 @@ const SideBar = () => {
             <button >Data Exports</button>
           </div>
           <div className='w-3/5 sm:w-full border-[#1160B3] border rounded-md text-[#000000] p-3  text-center my-4 '>
-            <button >Log Out</button>
+            <button onClick={handleLogout}>Log Out</button>
           </div>
         </div>
       </div>

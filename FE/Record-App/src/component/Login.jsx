@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Logo from "../assets/LOGO.png"
 import google from '../assets/google-icon.png'
 import { useNavigate } from "react-router-dom";
@@ -6,32 +6,50 @@ import { Button, TextField } from '@mui/material';
 import styled from '@emotion/styled';
 import { API_BASE_URL } from '../config/apiConfig';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 
 const Login = () => {
   const navigate = useNavigate()
+  const [error, setError] = useState('');
 
   const handleSubmit =async (e) => {
     e.preventDefault()
+    
    
-    const data=new FormData(e.currentTarget)
-        const userData={           
-            email:data.get("email"),
-            password:data.get("password"),
-        }
-        try {
-          const res=await axios.post(`${API_BASE_URL}/auth/signin`,userData)
-          const user=res.data
-          if(user?.jwt){
-              localStorage.setItem("jwt",user.jwt)
-          }
-          toast.success(" Successfully login  !");
-          navigate("/home")
-          
-      } catch (error) {
-          toast.error("User not found")
-          
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    // Simple validation for password length
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    try {
+      const res = await axios.post('http://localhost:3000/api/login', {
+        Email_id: email,
+        Password: password,
+      });
+      console.log("🚀 ~ handleSubmit ~ res:", res)
+
+      const jwt=res?.data?.token
+
+      if (jwt) {
+        localStorage.setItem('jwt',jwt);
       }
+
+      toast.success('Successfully logged in!');
+      navigate('/home');
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setError('Incorrect email or password');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    }
+  
 
   }
 
@@ -84,9 +102,9 @@ const Login = () => {
               {/* Email Input */}
               <div className='w-4/5 mb-6 mt-4'>
                 <label htmlFor="" className='text-[16px] text-[#000000] '>Enter your email</label>
-                {/* <input type="text" placeholder='demo@gmail.com' className='w-full border rounded-md p-4 border-black focus:outline-none mt-2 
-            text-[#B1BECD] text-[18px]' /> */}
-                <CustomTextField
+                <input type="text" name="email" placeholder='demo@gmail.com' className='w-full border rounded-md p-4 border-black focus:outline-none mt-2 
+            text-[#B1BECD] text-[18px]' />
+                {/* <CustomTextField
                   required
                   id="email"
                   name="email"
@@ -94,14 +112,14 @@ const Login = () => {
                   variant="outlined"
                   placeholder='Enter email'
                   autoComplete="off" 
-                />
+                /> */}
               </div>
 
               {/* Password Input */}
               <div className='w-4/5 mb-6'>
                 <label htmlFor="" className='text-[16px] text-[#000000]'>Enter your password</label>
-                {/* <input type="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2  text-[18px]' /> */}
-                <CustomTextField
+                <input type="password"  name="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2  text-[18px]' />
+                {/* <CustomTextField
                   className='border rounded-md text-[#B1BECD]'
                   required
                   id="password"
@@ -110,17 +128,18 @@ const Login = () => {
                   type="password"
                   placeholder='********'
                   autoComplete="off" 
-                />
+                /> */}
+                 {error && <p style={{ color: 'red' }}>{error}</p>}
 
                 
               </div>
 
               {/* Login Button */}
               <div className='w-4/5 mb-2'>
-                {/* <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] ' >Log in</button> */}
-                <Button className=' bg-[#1160B3] w-full border rounded-md' type="submit" variant='contained' size='large' sx={{ padding: ".8rem 0", }}>
+                <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] ' >Log in</button>
+                {/* <Button className=' bg-[#1160B3] w-full border rounded-md' type="submit" variant='contained' size='large' sx={{ padding: ".8rem 0", }}>
                   Login
-                </Button>
+                </Button> */}
               </div>
 
 
