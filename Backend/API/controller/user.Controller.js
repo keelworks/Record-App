@@ -1,4 +1,4 @@
-import { deleteUserId, getAllUsers, getUserProfileByToken } from "../services/user.service.js"
+import {  findUserById, getAllUsers } from "../services/user.service.js"
 
 export const getUserProfile=async(req,res)=>{
     const jwt=req.headers.authorization?.split(" ")[1]

@@ -1,17 +1,36 @@
-const express = require('express');
-const pool = require('./db');
-const User = require('./models/User');
+import express from 'express'
+import connectToDatabase  from './config/db.cjs'; 
+import userRouter from './routes/user.route.js';
 
-const app = express();
+
+const app=express()
+app.use(express.json())
+//app.use(cors())
+
+app.get("/",(req,res)=>{
+    return res.status(200).send({message:"Participant Record Application",status:true})
+})
+
+// app.use("/auth",authRouter)
+// app.use("/user",userRouter)
+
+
+
+
+export default app
+//export default  app = express();
 
 // Connect to MySQL
-pool.getConnection((err, connection) => {
-  if (err) {
-    throw err; // Exit on error
-  }
-  console.log(`Connected to MySQL as ${connection.config.user}@${connection.config.host}`);
-});
+connectToDatabase()
+  .then(connection => {
+    console.log(' Successfully connected to database:');
+    // ...
+  })
+  .catch(error => {
+    console.error('Error connecting to database:', error);
+  });
 
+/*
 // Get all users (consider pagination for large datasets)
 app.get('/users', async (req, res) => {
   try {
@@ -53,4 +72,4 @@ app.get('/:id', async (req, res) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+app.listen(port, () => console.log(`Server listening on port ${port}`));*/

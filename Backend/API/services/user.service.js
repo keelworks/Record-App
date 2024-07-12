@@ -1,5 +1,5 @@
-import userModel from "../models/user.model.js";
-import bcrypt from 'bcrypt'
+import getUser from "../models/user.model.js";
+//import bcrypt from 'bcrypt'
 //import { getUserIdFromToken } from "../config/jwtProvider.js";
 
 

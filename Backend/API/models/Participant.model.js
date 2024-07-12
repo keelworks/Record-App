@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../config/db');
 
 const getParticipant = async () => {
   const [rows] = await pool.query('SELECT Email_id, Firstname ,LastName,Mobile,Address,Gender,Race,VisaStatus,Disability,VeteranStatus FROM Participant'); // Exclude password for security
