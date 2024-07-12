@@ -1,33 +1,24 @@
-import getUser from "../models/user.model.js";
-//import bcrypt from 'bcrypt'
+import User from "../models/user.model.js";
+import bcrypt from 'bcrypt'
 //import { getUserIdFromToken } from "../config/jwtProvider.js";
 
 
 
-export const findUserById = async (userId) => {
-    try {
-        const user = await userModel.findById(userId)
-        if (!user) {
-            throw new Error("user not found with id", userId)
-        }
-        return user
-
-    } catch (error) {
-        throw new Error(error.message)
-
-
+// const comparePasswords = (plainPassword, hashedPassword) => {
+//     // Implement secure password comparison using bcrypt
+//     return plainPassword === hashedPassword; // Placeholder, replace with bcrypt logic
+//   };
+  
+  const userService = {
+    async login(email, password) {
+      const user = await User.findByEmail(email);
+      if (!user || !comparePasswords(password, user.password)) {
+        throw new Error('Invalid email or password');
+      }
+      return user; // Return user object (excluding password)
     }
+  };
+  
+  module.exports = userService;
 
-}
 
-export const getAllUsers=async()=>{
-    try {
-        const user=await userModel.find()
-        return user
-        
-    } catch (error) {
-        throw new Error(error.message)
-        
-    }
-
-}

@@ -1,11 +1,23 @@
-import mysql from '../config/db.cjs'
-
-//const getUser = async (UserId) => {
-  export default async function  getUser(UserID){
-  const [rows] = await mysql.query('SELECT Email_id,First_Name,Last_Name FROM User ',[UserId]); // Exclude password for security
-  return rows;
-};
 
 
-//module.exports = { getUser};
+
+import pool from '../config/db.cjs'
+
+class User {
+  constructor(email, firstName, lastName, password) {
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.password = password;
+  }
+
+  static async findByEmail(email) {
+    const sql = `Select * FROM User where email = ?`;
+    const [rows] = await pool.query(sql, [email]);
+    return rows.length ? new User(...rows[0]) : null; // Map row to User instance
+  }
+}
+
+module.exports = User;
+
 
