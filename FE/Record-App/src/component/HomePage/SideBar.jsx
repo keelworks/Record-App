@@ -9,6 +9,7 @@ const SideBar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('user')
     toast.success('Successfully logged out!');
     navigate('/'); // Redirect to the login page
   };

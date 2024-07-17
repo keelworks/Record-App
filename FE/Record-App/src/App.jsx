@@ -10,8 +10,10 @@ import Profile from './component/HomePage/Profile'
 import MainPage from './component/HomePage/MainPage'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from 'react-toastify';
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
 import Error from './pages/Error'
+import { UserProvider } from './context/userContext.jsx'
+import ProtectedRoute from './component/ProtectedRoute.jsx'
 
 
 const router = createBrowserRouter([
@@ -20,24 +22,39 @@ const router = createBrowserRouter([
     element: <Login />,
     errorElement: <Error />,
   },
+  
   {
     path: '/home',
-    element: <HomePage />,
+    element: (
+      <ProtectedRoute>
+        <HomePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/profile',
-    element: <Profile />,
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/participantApp',
-    element: <ParticipantRecordApp />,
+    element: (
+      <ProtectedRoute>
+        <ParticipantRecordApp />
+      </ProtectedRoute>
+    ),
   },
 ]);
 function App() {
   return (
     <>
       <main>
-        <RouterProvider router={router} />
+        <UserProvider>
+          <RouterProvider router={router} />
+        </UserProvider>
       </main>
       <ToastContainer
         position="top-right"

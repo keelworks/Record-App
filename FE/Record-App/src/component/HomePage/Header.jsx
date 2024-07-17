@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import search from '../../assets/search.png'
 import avatar from '../../assets/avatar.png'
 import { Avatar } from '@mui/material'
+import { UserContext } from '../../context/userContext'
 
 const Header = () => {
+  const {user}=useContext(UserContext)
+  console.log("🚀 ~ Header ~ user:", user)
   return (
   
     <div className='flex md:flex-col lg:flex-row flex-col   bg-white fixed w-4/5 lg:mt-8  mx-[4rem]  '>
@@ -23,8 +26,8 @@ const Header = () => {
         <Avatar alt="Remy Sharp" src={avatar}  sx={{ width: 56, height: 56 }}/>
         </div>
         <div className='ml-2 text-black'>
-          <p className='font-semibold lg:text-[24px] md:text-xl sm:text-sm'>Anna Taylor</p>
-          <p className='text-base sm:text-[16px] mt-0'>annataylor@keelworks.com</p>
+          <p className='font-semibold lg:text-[24px] md:text-xl sm:text-sm'>{user.name +" "+ user.last}</p>
+          <p className='text-base sm:text-[16px] mt-0'>{user.email}</p>
         </div>
       </div>
      

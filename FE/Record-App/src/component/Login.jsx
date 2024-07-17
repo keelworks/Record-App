@@ -1,47 +1,46 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Logo from "../assets/LOGO.png"
 import google from '../assets/google-icon.png'
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, TextField } from '@mui/material';
 import styled from '@emotion/styled';
 import { API_BASE_URL } from '../config/apiConfig';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { UserContext } from '../context/userContext';
 
 
 const Login = () => {
   const navigate = useNavigate()
   const [error, setError] = useState('');
+  const { setUser ,user} = useContext(UserContext);
+  const location = useLocation();
 
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-   
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email');
     const password = formData.get('password');
 
-    // Simple validation for password length
     if (password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
 
     try {
-      const res = await axios.post('http://localhost:3000/api/login', {
+      const res = await axios.post(`${API_BASE_URL}/api/login`, {
         Email_id: email,
         Password: password,
       });
-      console.log("🚀 ~ handleSubmit ~ res:", res)
 
-      const jwt=res?.data?.token
+      const jwt = res?.data?.token
 
       if (jwt) {
-        localStorage.setItem('jwt',jwt);
+        localStorage.setItem('jwt', jwt);
+        setUser({email: email,name:res?.data?.user.First_Name,last:res?.data?.user.Last_Name }); 
+        toast.success('Successfully logged in!');
+        navigate('/home');
       }
-
-      toast.success('Successfully logged in!');
-      navigate('/home');
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setError('Incorrect email or password');
@@ -49,8 +48,14 @@ const Login = () => {
         setError('Login failed. Please try again.');
       }
     }
-  
 
+  }
+
+
+  
+  const handleGoogleClick=async()=>{
+    // window.location.href= 'http://localhost:3000/auth/google'
+  
   }
 
   const CustomTextField = styled(TextField)(({ theme }) => ({
@@ -59,7 +64,7 @@ const Login = () => {
         // borderColor: 'black',
         border: "1px solid black",
         borderRadius: "8px",
-        
+
       },
       '&:hover fieldset': {
         borderColor: 'black', // Border color on hover
@@ -82,9 +87,7 @@ const Login = () => {
 
   return (
     <div>
-
       <div className='flex flex-col w-full h-screen'>
-
         {/* Logo */}
         <div className='w-full  flex justify-center items-center h-2/6   '>
           <div className='w-full max-w-md border-black rounded-md flex flex-col items-center justify-center  '>
@@ -118,7 +121,7 @@ const Login = () => {
               {/* Password Input */}
               <div className='w-4/5 mb-6'>
                 <label htmlFor="" className='text-[16px] text-[#000000]'>Enter your password</label>
-                <input type="password"  name="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2  text-[18px]' />
+                <input type="password" name="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2  text-[18px]' />
                 {/* <CustomTextField
                   className='border rounded-md text-[#B1BECD]'
                   required
@@ -129,9 +132,9 @@ const Login = () => {
                   placeholder='********'
                   autoComplete="off" 
                 /> */}
-                 {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p style={{ color: 'red' }}>{error}</p>}
 
-                
+
               </div>
 
               {/* Login Button */}
@@ -153,7 +156,7 @@ const Login = () => {
                 <div className='w-full h-[1px] bg-[#134C88]'></div>
               </div>
               {/* Continue with Google */}
-              <div className='w-4/5 flex border rounded-md p-3 border-black items-center justify-between mb-6 mt-8 cursor-pointer'>
+              <div className='w-4/5 flex border rounded-md p-3 border-black items-center justify-between mb-6 mt-8 cursor-pointer' onClick={handleGoogleClick}>
                 <div className=' w-1/5 sm:text-sm flex justify-end mr-4 '>
                   <img src={google} alt="Google logo" />
                 </div>
