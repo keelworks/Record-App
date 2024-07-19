@@ -6,11 +6,10 @@ import { UserContext } from '../../context/userContext'
 
 const Header = () => {
   const {user}=useContext(UserContext)
-  console.log("🚀 ~ Header ~ user:", user)
   return (
   
     <div className='flex md:flex-col lg:flex-row flex-col   bg-white fixed w-4/5 lg:mt-8  mx-[4rem]  '>
-      <div className='w-3/4 ml-2 sm:ml-4 lg:w-3/5 xl:w-3/4'>
+      <div className='w-3/4 ml-2 sm:ml-4 lg:w-7/12 xl:w-4/6 '>
         <div className='w-4/5  border rounded-md border-gray-200 m-4 p-3 flex'>
           <div>
           <img src={search} alt="" className='w-[25px] h-[25px]' />
@@ -21,7 +20,7 @@ const Header = () => {
         </div>
 
       </div>
-      <div className='w-1/4 flex md:mt-1  ml-2 sm:ml-4 lg:w-2/5 xl:w-1/4'>
+      <div className='w-1/4 flex md:mt-1  ml-2 sm:ml-4 lg:w-2/5 xl:w-1/4 '>
         <div className='sm:mb-2 ml-2 lg:ml-0' >
         <Avatar alt="Remy Sharp" src={avatar}  sx={{ width: 56, height: 56 }}/>
         </div>

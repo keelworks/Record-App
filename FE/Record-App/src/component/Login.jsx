@@ -8,13 +8,16 @@ import { API_BASE_URL } from '../config/apiConfig';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { UserContext } from '../context/userContext';
+import { jwtDecode } from 'jwt-decode';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from './firebase';
+
 
 
 const Login = () => {
   const navigate = useNavigate()
   const [error, setError] = useState('');
-  const { setUser ,user} = useContext(UserContext);
-  const location = useLocation();
+  const { setUser, user } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,7 +40,7 @@ const Login = () => {
 
       if (jwt) {
         localStorage.setItem('jwt', jwt);
-        setUser({email: email,name:res?.data?.user.First_Name,last:res?.data?.user.Last_Name }); 
+        setUser({ email: email, name: res?.data?.user.First_Name, last: res?.data?.user.Last_Name });
         toast.success('Successfully logged in!');
         navigate('/home');
       }
@@ -48,42 +51,55 @@ const Login = () => {
         setError('Login failed. Please try again.');
       }
     }
-
   }
+  // useEffect(() => {
+  //   const getUserEmailFromCookie = () => {
+  //     const cookieString = document.cookie;
 
+  //     const cookies = cookieString.split('; ').reduce((acc, cookie) => {
+  //       const [name, ...rest] = cookie.split('=');
+  //       acc[name] = rest.join('=');
+  //       return acc;
+  //     }, {});
 
-  
-  const handleGoogleClick=async()=>{
+  //     const token = cookies['jwt'];
+  //     localStorage.setItem('jwt',token)
+
+  //     if (token) {
+  //       try {
+  //         const decodedToken = jwtDecode(token);          
+  //         setUser({email: decodedToken.email,name:decodedToken.firstName,last:decodedToken.lastName }); 
+  //       } catch (error) {
+  //         console.error("Error decoding token:", error);
+  //       }
+  //     }
+  //   };
+
+  //   getUserEmailFromCookie();
+  // }, [setUser]);
+
+  const handleGoogleClick = async () => {
+    googleLogin()
     // window.location.href= 'http://localhost:3000/auth/google'
-  
+
   }
+  const googleLogin = () => {
+    console.log("sjhdgfhgfgs");
+    const provider = new GoogleAuthProvider()
+    signInWithPopup(auth, provider).then(async (result) => {
+      const userDetails = result.user.displayName.split(' ')
+      if (result.user) {
+        setUser({ email: result.user.email, name: userDetails[0], last: userDetails[1] })
+        toast.success("User login successfully")
+        navigate("/home")
 
-  const CustomTextField = styled(TextField)(({ theme }) => ({
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        // borderColor: 'black',
-        border: "1px solid black",
-        borderRadius: "8px",
+      }
+    })
+      .catch((err) => {
+        toast.error(err)
+      })
 
-      },
-      '&:hover fieldset': {
-        borderColor: 'black', // Border color on hover
-      },
-      '& .MuiInputBase-input': {
-        color: '#B1BECD', // Text color
-        fontSize: '18px', // Font size
-      },
-      '&.Mui-focused fieldset': {
-        // borderColor: 'grey',
-        border: "1px solid black", // Border color when focused
-      },
-    },
-    '& .MuiInputBase-root': {
-      '& input': {
-        outline: 'none', // Removing default outline
-      },
-    },
-  }));
+  }
 
   return (
     <div>
@@ -107,44 +123,19 @@ const Login = () => {
                 <label htmlFor="" className='text-[16px] text-[#000000] '>Enter your email</label>
                 <input type="text" name="email" placeholder='demo@gmail.com' className='w-full border rounded-md p-4 border-black focus:outline-none mt-2 
             text-[#B1BECD] text-[18px]' />
-                {/* <CustomTextField
-                  required
-                  id="email"
-                  name="email"
-                  fullWidth
-                  variant="outlined"
-                  placeholder='Enter email'
-                  autoComplete="off" 
-                /> */}
               </div>
 
               {/* Password Input */}
               <div className='w-4/5 mb-6'>
                 <label htmlFor="" className='text-[16px] text-[#000000]'>Enter your password</label>
                 <input type="password" name="password" placeholder='*************' className='w-full border text-[#B1BECD] rounded-md p-4 border-black focus:outline-none  mt-2  text-[18px]' />
-                {/* <CustomTextField
-                  className='border rounded-md text-[#B1BECD]'
-                  required
-                  id="password"
-                  name="password"
-                  fullWidth
-                  type="password"
-                  placeholder='********'
-                  autoComplete="off" 
-                /> */}
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-
-
               </div>
 
               {/* Login Button */}
               <div className='w-4/5 mb-2'>
                 <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] ' >Log in</button>
-                {/* <Button className=' bg-[#1160B3] w-full border rounded-md' type="submit" variant='contained' size='large' sx={{ padding: ".8rem 0", }}>
-                  Login
-                </Button> */}
               </div>
-
 
               <div className='w-4/5 mb-4'>
                 <a className='w-full p-2  text-[16px] font-semibold text-[#1160B3] underline block'>Forgot Your Password</a>
@@ -155,6 +146,7 @@ const Login = () => {
                 <p className='text-[24px] mx-4 text-[#000000]'>or</p>
                 <div className='w-full h-[1px] bg-[#134C88]'></div>
               </div>
+
               {/* Continue with Google */}
               <div className='w-4/5 flex border rounded-md p-3 border-black items-center justify-between mb-6 mt-8 cursor-pointer' onClick={handleGoogleClick}>
                 <div className=' w-1/5 sm:text-sm flex justify-end mr-4 '>
@@ -164,13 +156,10 @@ const Login = () => {
                   <p>Continue with Google</p>
                 </div>
               </div>
-
             </div>
           </div>
         </form>
-
       </div>
-
     </div>
   )
 }

@@ -1,15 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import homeLogo from '../../assets/home-logo.png'
 import {useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
+import cookies from 'js-cookie'
+import { UserContext } from '../../context/userContext'
+import { auth } from '../firebase'
 
 const SideBar = () => {
   const navigate = useNavigate()
+  const {setUser}=useContext(UserContext)
 
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
     localStorage.removeItem('user')
+    auth.signOut()
+    // cookies.remove('jwt')
+    // cookies.remove('user')
+    // cookies.remove('userEmail')
+    setUser('')
     toast.success('Successfully logged out!');
     navigate('/'); // Redirect to the login page
   };
