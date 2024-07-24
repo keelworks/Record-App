@@ -18,3 +18,7 @@ export const loginvalidation=[
 export const forgetvalidation=[ 
   check('Email_id','Please enter a valid email').isEmail().normalizeEmail({gmail_remove_dots:true}),
 ]
+
+export const passwordvalidation=[ 
+  check('password','Password is required').isLength({min:6})
+]
