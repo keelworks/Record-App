@@ -2,9 +2,8 @@ import { validationResult } from 'express-validator'
 import bcryptjs from 'bcryptjs'
 import conn from '../config/dbConnection.js'
 import jwt from 'jsonwebtoken'
-import randomstring from 'randomstring'
-import sendMail from '../helper/sendMail.js'
-
+import crypto from'crypto'
+import nodemailer from 'nodemailer'
 
 
 const { JWT_SCRETE } = process.env
