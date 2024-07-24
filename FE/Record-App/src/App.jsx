@@ -1,19 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import LoginPage from './component/LoginPage'
 import HomePage from './component/HomePage/HomePage'
 import Login from './component/Login'
 import ParticipantRecordApp from './component/HomePage/ParticipantRecordApp'
 import Profile from './component/HomePage/Profile'
-import MainPage from './component/HomePage/MainPage'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from 'react-toastify';
 import { RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
 import Error from './pages/Error'
 import { UserProvider } from './context/userContext.jsx'
 import ProtectedRoute from './component/ProtectedRoute.jsx'
+import ForgetPassword from './component/ForgetPassword.jsx'
+import ResetPassword from './component/ResetPassword.jsx'
 
 
 const router = createBrowserRouter([
@@ -45,6 +42,20 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ParticipantRecordApp />
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/forget-password',
+    element: (
+        <ForgetPassword />
+    ),
+  },
+  {
+    path: '/reset-password/:id/:token',
+    element: (
+      // <ProtectedRoute>
+        <ResetPassword />
+      // </ProtectedRoute>
     ),
   },
 ]);
