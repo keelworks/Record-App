@@ -1,12 +1,20 @@
 
 import conn from '../config/dbConnection.js'
 
-import { parse } from 'date-fns';
+import { isValid, parse } from 'date-fns';
 
 // Function to convert DD/MM/YYYY to YYYY-MM-DD
 const formatDate = (dateString) => {
-  const date = parse(dateString, 'dd/MM/yyyy', new Date());
-  return date.toISOString().split('T')[0]; // Converts to YYYY-MM-DD format
+  try {
+    const date = parse(dateString, 'dd/MM/yyyy', new Date());
+    if (!isValid(date)) {
+      throw new Error('Invalid date');
+    }
+    return date.toISOString().split('T')[0]; // Converts to YYYY-MM-DD format
+  } catch (error) {
+    console.error('Date format error:', error);
+    throw new Error('Invalid date format');
+  }
 };
 // Get all projects
 export const getAllProjects = async (req, res) => {
@@ -22,12 +30,20 @@ export const getAllProjects = async (req, res) => {
 // Add a new project
 export const addProject = async (req, res) => {
   const { Project_Name, Role, Start_Date, End_Date, Description } = req.body;
+  
   try {
-    await conn.query('INSERT INTO Projects (Project_Name, Role, Start_Date, End_Date, Description) VALUES (?, ?, ?, ?, ?)', [Project_Name, Role, Start_Date, End_Date, Description]);
-    return res.status(201).send({ success: true, message: "Project added successfully" });
+    const formattedStartDate = formatDate(Start_Date);
+    const formattedEndDate = formatDate(End_Date);
+
+    await conn.query(
+      'INSERT INTO Projects (Project_Name, Role, Start_Date, End_Date, Description) VALUES (?, ?, ?, ?, ?)',
+      [Project_Name, Role, formattedStartDate, formattedEndDate, Description]
+    );
+
+    return res.status(201).send({ success: true, message: 'Project added successfully' });
   } catch (err) {
-    console.error("Error adding project:", err);
-    return res.status(500).send({ error: "Internal server error" });
+    console.error('Error adding project:', err);
+    return res.status(500).send({ error: 'Internal server error' });
   }
 };
 // Update an existing project
@@ -68,9 +84,9 @@ export const updateProject = async (req, res) => {
 
 // Delete a project
 export const deleteProject = async (req, res) => {
-  const { Project_id } = req.params;
+  const { id } = req.params;
   try {
-    await conn.query('DELETE FROM Projects WHERE Project_id = ?', [Project_id]);
+    await conn.query('DELETE FROM Projects WHERE Project_id = ?', [id]);
     return res.status(200).send({ success: true, message: "Project deleted successfully" });
   } catch (err) {
     console.error("Error deleting project:", err);
