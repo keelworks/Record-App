@@ -6,6 +6,10 @@ import './config/dbConnection.js'
 import bodyParser from 'body-parser'
 import userRoutes from './routes/userRouter.js'
 import session from 'express-session';
+import EducationRouter from './routes/EducationRouter.js'
+import ExperienceRouter from './routes/ExperinceRouter.js'
+import ProjectRouter from './routes/ProjectRouter.js'
+import ParticipantRouter from './routes/ParticipantRouter.js'
 
 
 const app = express()
@@ -19,6 +23,10 @@ app.use(cors({ origin: 'http://localhost:5173',  methods: 'GET,POST,PUT,DELETE',
 
 
 app.use('/api', userRoutes)
+app.use('/api', EducationRouter)
+app.use('/api', ExperienceRouter)
+app.use('/api', ProjectRouter)
+app.use('/api', ParticipantRouter)
 
 app.use((err, req, res, next) => {
   console.error("Error:", err);

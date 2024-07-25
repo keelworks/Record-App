@@ -69,7 +69,6 @@ export const login = async (req, res) => {
     );
 
     // Log the token to verify
-    console.log("JWT Token:", token);
 
     // Log the decoded token payload to verify
     const decodedToken = jwt.decode(token);
@@ -187,3 +186,4 @@ export const ResetPassword = async (req, res) => {
     res.json({ Status: 'Error with token' });
   }
 }
+
