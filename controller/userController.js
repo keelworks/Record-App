@@ -2,12 +2,8 @@ import { validationResult } from 'express-validator'
 import bcryptjs from 'bcryptjs'
 import conn from '../config/dbConnection.js'
 import jwt from 'jsonwebtoken'
-import crypto from'crypto'
-import nodemailer from 'nodemailer'
-
 
 const { JWT_SCRETE } = process.env
-
 
 export const register = async (req, res) => {
   const errors = validationResult(req)
@@ -179,13 +175,9 @@ export const ResetPassword = async (req, res) => {
   const { password } = req.body;
 
   try {
-
     jwt.verify(token, JWT_SCRETE);
-
     const hashedPassword = await bcryptjs.hash(password, 10);
-
     const [results] = await conn.query('UPDATE User SET Password = ? WHERE ID = ?', [hashedPassword, id]);
-
     if (results.affectedRows > 0) {
       res.send({ Status: 'Success' });
     } else {
@@ -194,6 +186,4 @@ export const ResetPassword = async (req, res) => {
   } catch (err) {
     res.json({ Status: 'Error with token' });
   }
-
-
 }

@@ -9,7 +9,7 @@ import session from 'express-session';
 
 
 const app = express()
-app.use(session({ secret: process.env.JWT_SCRETE, resave: false, saveUninitialized: true, cookie: { secure: false } }));
+// app.use(session({ secret: process.env.JWT_SCRETE, resave: false, saveUninitialized: true, cookie: { secure: false } }));
 
 app.use(express.json())
 app.use(bodyParser.json())
