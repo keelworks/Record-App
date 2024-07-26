@@ -53,9 +53,7 @@ const router = createBrowserRouter([
   {
     path: '/reset-password/:id/:token',
     element: (
-      // <ProtectedRoute>
         <ResetPassword />
-      // </ProtectedRoute>
     ),
   },
 ]);

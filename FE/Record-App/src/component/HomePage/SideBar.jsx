@@ -27,7 +27,7 @@ const SideBar = () => {
     <div className='flex h-full flex-col fixed '>
       <div className='m-2 h-2/4 xl:m-8 lg:m-4'>
         <div className=''>
-          <img src={homeLogo} alt="" className='w-2/4 h-1/2  lg:w-3/4 lg:h-3/4' />
+          <img src={homeLogo} alt="" className='w-3/5 h-3/5  lg:w-3/4 lg:h-3/4 xl:w-full xl:h-full' />
         </div>
         <div className='mt-8'>
           <ul className='font-sans  text-[#000000] lg:text-[24px] text-[20px]'>
