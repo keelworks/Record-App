@@ -7,8 +7,6 @@ export const signUpvalidation=[
   check('Password','Password is required').isLength({min:6})
 ]
 
-
-
 export const loginvalidation=[
  
   check('Email_id','Please enter a valid email').isEmail().normalizeEmail({gmail_remove_dots:true}),

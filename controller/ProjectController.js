@@ -1,21 +1,8 @@
 
 import conn from '../config/dbConnection.js'
+import formatDate from './formateDate.js';
 
-import { isValid, parse } from 'date-fns';
 
-// Function to convert DD/MM/YYYY to YYYY-MM-DD
-const formatDate = (dateString) => {
-  try {
-    const date = parse(dateString, 'dd/MM/yyyy', new Date());
-    if (!isValid(date)) {
-      throw new Error('Invalid date');
-    }
-    return date.toISOString().split('T')[0]; // Converts to YYYY-MM-DD format
-  } catch (error) {
-    console.error('Date format error:', error);
-    throw new Error('Invalid date format');
-  }
-};
 // Get all projects
 export const getAllProjects = async (req, res) => {
   try {
@@ -81,7 +68,6 @@ export const updateProject = async (req, res) => {
     return res.status(500).send({ error: "Internal server error" });
   }
 };
-
 // Delete a project
 export const deleteProject = async (req, res) => {
   const { id } = req.params;
