@@ -7,7 +7,11 @@ import formatDate from './formateDate.js';
 export const getAllProjects = async (req, res) => {
   try {
     const [results] = await conn.query('SELECT * FROM Projects');
-    return res.status(200).send({ success: true, data: results });
+
+     // Fetch count of projects
+     const [countResults] = await conn.query('SELECT COUNT(*) AS total FROM Projects');
+     const totalProjects = countResults[0].total;
+    return res.status(200).send({ success: true, data: results ,total:totalProjects});
   } catch (err) {
     console.error("Error fetching projects:", err);
     return res.status(500).send({ error: "Internal server error" });

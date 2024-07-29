@@ -10,6 +10,7 @@ const conn=mysql.createPool({
   password:DB_PASSWORD,
   database:DB_NAME,
   port: DB_PORT ? parseInt(DB_PORT, 10) : 3306
+  
 })
 
 conn.getConnection()

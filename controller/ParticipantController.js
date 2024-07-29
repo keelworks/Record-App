@@ -4,7 +4,12 @@ import formatDate from './formateDate.js';
 export const getAllParticipants = async (req, res) => {
   try {
     const [results] = await conn.query('SELECT * FROM Participant');
-    return res.status(200).send({ success: true, data: results });
+
+     // Fetch count of projects
+     const [countResults] = await conn.query('SELECT COUNT(*) AS total FROM Participant');
+     const totalProjects = countResults[0].total;
+     
+    return res.status(200).send({ success: true, data: results,total:totalProjects });
   } catch (err) {
     console.error("Error fetching participants:", err);
     return res.status(500).send({ error: "Internal server error" });
