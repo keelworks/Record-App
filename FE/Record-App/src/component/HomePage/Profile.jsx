@@ -23,6 +23,7 @@ import { Progress } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 
 import '../../App.css'
+import { useLocation } from 'react-router-dom';
 
 function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
@@ -101,6 +102,11 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 const Profile = ({ activeStep }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('Start');
+
+  const location = useLocation();
+  const { state } = location;
+  const participant = state?.participant;
+
   const { value: value1, reset: resetValue1 } = useCountUp({
     isCounting: isLoading,
     duration: 1,
@@ -120,6 +126,7 @@ const Profile = ({ activeStep }) => {
     "Interviews",
 
   ]
+  
   const { value: value2, reset } = useCountUp({
     isCounting: true,
     duration: 1,
@@ -156,7 +163,7 @@ const Profile = ({ activeStep }) => {
           <div className='flex flex-col md:flex-row lg:flex-row items-center justify-between w-full  mb-8 h-auto  '>
             <div className='w-full md:w-3/5 lg:w-3/5 mt-4 lg:mt-0 md:mx-8 '>
               <span className='font-semibold text-3xl sm:text-3xl mx-10 md:ml-0 lg:text-[40px] text-black'  ><FontAwesomeIcon icon={faLessThan} className='text-black w-[24px] h-[24px] mr-3 mb-1' />
-                Gaurav Patil</span>
+              {participant.First_Name}  </span>
             </div>
             <div className='flex w-full md:w-2/5 lg:w-2/5  justify-start items-center text-center md:justify-center lg:justify-center mt-4 md:mt-0  ml-16 md:ml-0'>
               <div className='bg-[#0D5299] w-[100px] md:w-[208px] flex justify-center items-center border rounded-lg h-[56px] mr-4'>
@@ -185,6 +192,7 @@ const Profile = ({ activeStep }) => {
                       fontFamily: "Montserrat, sans-serif",
                       color: "black",
                       fontSize: "16px",// Just text label (COMPLETED)
+                     
                     },
                   }}>{label}</StepLabel>
                 </Step>
@@ -205,25 +213,24 @@ const Profile = ({ activeStep }) => {
                   <div className='text-[20px] text-black'>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2 '>
                       <div style={{ marginLeft: '20px' }}>Role</div>
-                      <div style={{ marginRight: '20px' }}>Project Manager</div>
+                      <div style={{ marginRight: '20px' }}>{participant.project.role}</div>
                     </div>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Email</div>
-                      <div style={{ marginRight: '20px' }}>Gaurav.Patil@keelworks.org</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Email_id}</div>
                     </div>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Mobile</div>
-                      <div style={{ marginRight: '20px' }}>735-222-333</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Mobile}</div>
                     </div>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Timezone</div>
-                      <div style={{ marginRight: '20px' }}>Pacific Time</div>
+                      <div style={{ marginRight: '20px' }}>{participant.TimeZone}</div>
                     </div>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Address</div>
-                      <div style={{ marginRight: '20px' }}>San Francisco, CA, USA</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Address}</div>
                     </div>
-
                   </div>
                 </div>
 
@@ -236,23 +243,23 @@ const Profile = ({ activeStep }) => {
                   <div className='text-[20px] text-black'>
                     <div className='flex justify-between flex-row sm:flex-row items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Gender</div>
-                      <div style={{ marginRight: '20px' }}>Male</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Gender}</div>
                     </div>
                     <div className='flex justify-between flex-row sm:flex-row items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Race/Ethnicity</div>
-                      <div style={{ marginRight: '20px' }}>Asian</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Race_Ethnicity}</div>
                     </div>
                     <div className='flex justify-between flex-row sm:flex-row items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Visa Status</div>
-                      <div style={{ marginRight: '20px' }}>F1 OPT</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Visa_Status}</div>
                     </div>
                     <div className='flex justify-between flex-row sm:flex-row items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Veteran Status</div>
-                      <div style={{ marginRight: '20px' }}>Not a Veteran</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Veteran_Status}</div>
                     </div>
                     <div className='flex justify-between flex-row sm:flex-row items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Disability</div>
-                      <div style={{ marginRight: '20px' }}>N/A</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Disability}</div>
                     </div>
                   </div>
                 </div>
@@ -269,8 +276,8 @@ const Profile = ({ activeStep }) => {
                 <div className='text-[20px] text-black'>
 
                   <div className='flex justify-between my-2  sm:flex-row items-center'>
-                    <div style={{ marginLeft: '20px' }}>Project Management Intern</div>
-                    <div >Indeed</div>
+                    <div style={{ marginLeft: '20px' }}>{participant.experience.title}</div>
+                    <div >{participant.experience.company_name}</div>
                     <div style={{ marginRight: '20px' }}>July 2023 - Dec 2023</div>
                   </div>
                   <div className='flex justify-between my-2  sm:flex-row items-center'>
@@ -283,11 +290,9 @@ const Profile = ({ activeStep }) => {
                     <div >XY Education Foundation</div>
                     <div style={{ marginRight: '20px' }}>Sept 2022 - Jan 2023</div>
                   </div>
-
                 </div>
               </div>
             </div>
-
 
             {/* Third Row */}
             <div className='w-full '>
@@ -311,7 +316,6 @@ const Profile = ({ activeStep }) => {
                     <div className='text-center'>Purdue University</div>
                     <div className='text-right pr-4'>Aug 2017 - May 2021</div>
                   </div>
-
                 </div>
               </div>
             </div>

@@ -8,23 +8,23 @@ import { API_BASE_URL } from '../../config/apiConfig'
 
 const MainPage = () => {
   const [participant ,setParticipant]=useState()
+  const [projectTotal ,setProjectTotal]=useState()
   const [project ,setProject]=useState()
+  console.log("🚀 ~ MainPage ~ project:", project)
   const tableRecord = [
     {
       label: "No",
-      name: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     },
     {
       label: "ProjectName",
-      name: ["Project 1", "Project 2", "Project 3", "Project 4", "Project 5", "Project 6", "Project 7", "Project 8", "Project 9", "Project 10"]
     },
     {
       label: "Stage",
-      name: ["In Progress", "Completed", "Not Started", "In Progress", "On Hold", "In Progress", "Completed", "On Hold", "In Progress", "Completed"]
+     
     },
     {
       label: "ProjectManager",
-      name: ["Gaurav Patil", "Amit Sharma", "Priya Singh", "Rahul Verma", "Sneha Mehta", "Heena Dhanani", "Filicity", "Kapil Gupta", "Manas Babar", "Thomas Garrod"]
+      
     }
   ];
   useEffect(()=>{
@@ -32,12 +32,13 @@ const MainPage = () => {
       const particpant=await axios.get(`${API_BASE_URL}/api/getAllParticipant`)
       const project=await axios.get(`${API_BASE_URL}/api/getAllProject`)
       setParticipant(particpant.data.total)
-      setProject(project.data.total)
+      setProject(project.data.data)
+      setProjectTotal(project.data.total)
 
     }
     getData()
 
-  },[participant,project])
+  },[participant,projectTotal])
 
   return (
     <>
@@ -47,7 +48,7 @@ const MainPage = () => {
             <div className='grid md:grid-rows-2 lg:grid-rows-2 gap-2 ml-0 '>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 w-full'>
                 <div className='border rounded-2xl bg-[#0D5299] text-center text-white my-3 p-4 border-black w-full'>
-                  <p className='text-[40px] tracking-wider'>{project}</p>
+                  <p className='text-[40px] tracking-wider'>{projectTotal}</p>
                   <p className='font-light text-[20px] mt-0 tracking-wider'>Projects</p>
                   <a href="" className='text-[16px] underline tracking-wider hover:text-white'>See all</a>
                 </div>
@@ -65,17 +66,17 @@ const MainPage = () => {
                   </div>
                   <div className='flex flex-col w-full'>
                     <div className='flex justify-between m-2 w-full'>
-                      <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                      <div className="w-3 h-3 bg-green-500 rounded-full mr-2 mt-1"></div>
                       <div className='text-[16px] text-[#000000] w-1/3'>9:00 am - 10:00 am</div>
                       <div className='text-[16px] text-[#000000] w-2/3 overflow-wrap break-words'>Participant record app....</div>
                     </div>
                     <div className='flex justify-between m-2 w-full'>
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2 mt-1"></div>
                       <div className='text-[16px] text-[#000000] w-1/3'>9:00 am - 10:00 am</div>
                       <div className='text-[16px] text-[#000000] w-2/3 overflow-wrap break-words'>Participant record app....</div>
                     </div>
                     <div className='flex justify-between m-2 w-full'>
-                      <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                      <div className="w-3 h-3 bg-red-500 rounded-full mr-2 mt-1"></div>
                       <div className='text-[16px] text-[#000000] w-1/3'>9:00 am - 10:00 am</div>
                       <div className='text-[16px] text-[#000000] w-2/3 overflow-wrap break-words'>Participant record app....</div>
                     </div>
@@ -85,7 +86,7 @@ const MainPage = () => {
             </div>
             <div className='ml-2 my-3'>
               <div className='border rounded-2xl flex flex-col border-black h-full md:mt-0 w-full '>
-                <div className='bg-[#F29173] p-4 text-center font-normal text-[24px] text-black tracking-wider rounded-t-2xl w-full'>Participants who are not assigned</div>
+                <div className='bg-[#F29173] p-4 text-center  text-[24px] text-black font-normal tracking-wider rounded-t-2xl w-full'>Participants who are not assigned</div>
                 <div className='w-full'>
                   <div className='flex justify-around my-2 flex-col sm:flex-row items-center text-[20px] text-black w-full'>
                     <div>Participants 1</div>
@@ -119,7 +120,7 @@ const MainPage = () => {
             <div className='my-8'>
               <span className='font-semibold lg:text-[48px] text-3xl sm:text-4xl md:text-5xl text-[#000000]'>Teams</span>
             </div>
-            <div className='w-full'><CustomeTable title={tableRecord} /></div>
+            <div className='w-full'><CustomeTable title={tableRecord} data={project} /></div>
           </div>
         </div>
       </div>

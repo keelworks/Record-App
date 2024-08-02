@@ -14,7 +14,6 @@ const ResetPassword = () => {
     e.preventDefault()
     if(!password){
       setError("Password is required")
-
     }
     try {
       await axios.post(`${API_BASE_URL}/api/reset-password/${id}/${token}`, {
@@ -25,7 +24,6 @@ const ResetPassword = () => {
           navigate("/")
         }      
     })
-
       
     } catch (error) {
       console.log(error);
@@ -59,11 +57,11 @@ const ResetPassword = () => {
             </div>
             <div className='text-center w-4/5 mb-2 mt-5'>
             <button onClick={() => navigate("/")} className='text-[#1160B3]'>Cancel</button>
-
             </div>
           </div>
         </div>
-      </div></div>
+      </div>
+      </div>
 
   </>
   )

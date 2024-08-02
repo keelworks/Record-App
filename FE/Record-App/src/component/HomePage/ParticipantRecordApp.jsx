@@ -1,29 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomeTable from './CustomeTable'
 import edit from '../../assets/edit.png'
 import download from '../../assets/download.png'
 import SideBar from './SideBar'
 import Header from './Header'
+import { useLocation } from 'react-router-dom'
+import axios from 'axios'
+import { API_BASE_URL } from '../../config/apiConfig'
 
 const ParticipantRecordApp = () => {
-  const tableRecord = [
-    {
-      label: "No",
-      name: [1, 2, 3, 4, 5]
-    },
-    {
-      label: "FullName",
-      name: ["Gaurav Patil", "Amit Sharma", "Priya Singh", "Rahul Verma", "Sneha Mehta"]
-    },
-    {
-      label: "Role",
-      name: ["Project Manager", "Developer", "Designer", "Tester", "Analyst"]
-    },
-    {
-      label: "Email",
-      name: ["gaurav.patil@keelworks.org", "amit.sharma@keelworks.org", "priya.singh@keelworks.org", "rahul.verma@keelworks.org", "sneha.mehta@keelworks.org"]
+  const location = useLocation();
+  const { state } = location;
+  const project_name = state?.project_name;
+
+  const [participant,SetParticipant]=useState()
+
+ 
+
+  useEffect(()=>{
+    const getData=async()=>{
+      const particpant=await axios.get(`${API_BASE_URL}/api/getAllParticipant`)
+      SetParticipant(particpant.data.data)
+
     }
-  ];
+    getData()
+
+  },[])
 
   return (
 
@@ -38,7 +40,7 @@ const ParticipantRecordApp = () => {
             <div className='flex flex-col md:flex-row lg:flex-row items-center justify-between w-full mb-10 p-4'>
               <div className='w-full md:w-3/5 lg:w-3/5 mt-4'>
                 <span className='font-semibold text-3xl lg:text-[40px] text-black'>
-                  Speaking Improvement Project
+                 {project_name}
                 </span>
               </div>
               <div className='flex w-full md:w-2/5 lg:w-2/5 justify-start items-center text-center md:justify-end lg:justify-end mt-4'>
@@ -51,7 +53,7 @@ const ParticipantRecordApp = () => {
               </div>
             </div>
             <div className='w-full overflow-x-auto'>
-              <CustomeTable title={tableRecord} />
+              <CustomeTable project_name={project_name} participant={participant}  />
             </div>
           </div>
         </div>

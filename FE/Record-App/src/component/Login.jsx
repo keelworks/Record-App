@@ -64,14 +64,20 @@ const Login = () => {
   const googleLogin = () => {
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider).then(async (result) => {
-      const userDetails = result.user.displayName.split(' ')
-      if (result.user) {
+      const user = result.user;
+      const email = user.email;
+      const emailDomain = email.split('@')[1];
+      if (emailDomain==="keelworks.org") {
+        const userDetails = result.user.displayName.split(' ')
         let first_name = userDetails[0].charAt(0).toUpperCase() + userDetails[0].slice(1)
         let last_name = userDetails[1].charAt(0).toUpperCase() + userDetails[1].slice(1)
         setUser({ email: result.user.email, name: first_name, last: last_name })
         toast.success("User login successfully")
         navigate("/home")
 
+      }else{
+        toast.error("Only keelworks.org email addresses are allowed.");
+        // Optionally sign out the user if the email domain doesn't match
       }
     })
       .catch((err) => {
@@ -113,7 +119,7 @@ const Login = () => {
 
               {/* Login Button */}
               <div className='w-4/5 mb-2' >
-                <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] ' >Log in</button>
+                <button className='w-full border rounded-md p-4 bg-[#1160B3] text-white text-[16px] '>Log in</button>
               </div>
 
               <div className='w-4/5 mb-4' >
