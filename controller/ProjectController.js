@@ -27,7 +27,7 @@ export const addProject = async (req, res) => {
     const formattedEndDate = formatDate(End_Date);
 
     await conn.query(
-      'INSERT INTO Projects (Project_Name, Role, Start_Date, End_Date, Description) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO Projects (Project_Name, Role,Stage,Project_manager, Start_Date, End_Date, Description) VALUES (?, ?, ?, ?, ?,?,?)',
       [Project_Name, Role, formattedStartDate, formattedEndDate, Description]
     );
 
@@ -40,7 +40,7 @@ export const addProject = async (req, res) => {
 // Update an existing project
 export const updateProject = async (req, res) => {
   const { id } = req.params;
-  const { Project_Name, Role, Start_Date, End_Date, Description } = req.body;
+  const { Project_Name, Role, Start_Date, End_Date, Description,Stage,Project_manager } = req.body;
   
   try {
     // Fetch current values from the database
@@ -56,14 +56,16 @@ export const updateProject = async (req, res) => {
     const updatedProject = {
       Project_Name: Project_Name ?? currentProject.Project_Name,
       Role: Role ?? currentProject.Role,
+      Stage:Stage ?? currentProject.Stage,
+      Project_manager :Project_manager ?? currentProject.Project_manager,
       Start_Date: Start_Date ? formatDate(Start_Date) : currentProject.Start_Date,
       End_Date: End_Date ? formatDate(End_Date) : currentProject.End_Date,
       Description: Description ?? currentProject.Description
     };
 
     await conn.query(
-      'UPDATE Projects SET Project_Name = ?, Role = ?, Start_Date = ?, End_Date = ?, Description = ? WHERE Project_id = ?',
-      [updatedProject.Project_Name, updatedProject.Role, updatedProject.Start_Date, updatedProject.End_Date, updatedProject.Description, id]
+      'UPDATE Projects SET Project_Name = ?, Role = ?,Stage=?,Project_manager=?, Start_Date = ?, End_Date = ?, Description = ? WHERE Project_id = ?',
+      [updatedProject.Project_Name, updatedProject.Role,updatedProject.Stage ,updatedProject.Project_manager,updatedProject.Start_Date, updatedProject.End_Date, updatedProject.Description, id]
     );
 
     return res.status(200).send({ success: true, message: "Project updated successfully" });
