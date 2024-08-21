@@ -6,8 +6,23 @@ import jwt from 'jsonwebtoken'
 
 // Get all education entries
 export const getAllEducation = async (req, res) => {
+  const userRole = req.user.role; 
+  const userEmail = req.user.email; 
   try {
-    const [results] = await conn.query('SELECT * FROM Education');
+    let query = '';
+    let queryParams = [];
+
+    // If the user is an admin, fetch all education records
+    if (userRole === 'admin') {
+      query = 'SELECT * FROM Education';
+    } else {
+      // If the user is a participant, fetch only their own education records
+      query = 'SELECT * FROM Education WHERE Email_id = ?';
+      queryParams.push(userEmail); // Add the logged-in user's email as a query parameter
+    }
+
+    const [results] = await conn.query(query, queryParams);
+
     return res.status(200).send({ success: true, data: results });
   } catch (err) {
     console.error("Error fetching education entries:", err);
@@ -18,8 +33,9 @@ export const getAllEducation = async (req, res) => {
 // Add a new education entry
 export const addEducation = async (req, res) => {
   const { Institution_Name, Degree, Field_of_Study, Year_of_Graduation } = req.body;
+  const email = req.user.email;
   try {
-    await conn.query('INSERT INTO Education (Institution_Name, Degree, Field_of_Study, Year_of_Graduation) VALUES (?, ?, ?, ?)', [Institution_Name, Degree, Field_of_Study, Year_of_Graduation]);
+    await conn.query('INSERT INTO Education (Institution_Name, Degree, Field_of_Study, Year_of_Graduation,Email_id) VALUES (?, ?, ?, ?,?)', [Institution_Name, Degree, Field_of_Study, Year_of_Graduation,email]);
     return res.status(201).send({ success: true, message: "Education  added successfully" });
   } catch (err) {
     console.error("Error adding education", err);
@@ -30,7 +46,9 @@ export const addEducation = async (req, res) => {
 // Update an existing education entry
 export const updateEducation = async (req, res) => {
   const { id } = req.params;
-  const { Institution_Name, Degree, Field_of_Study, Year_of_Graduation } = req.body;
+  const { Institution_Name, Degree, Field_of_Study, Year_of_Graduation,Email_id } = req.body;
+  const userRole =(req.user.role || '').toLowerCase(); 
+  const userEmailId = req.user.email; 
   
   try {
     // Fetch current values from the database
@@ -42,17 +60,24 @@ export const updateEducation = async (req, res) => {
 
     const currentEntry = existingEntry[0];
 
+    // Check if the user is an admin or if they are updating their own record
+  if (userRole !== 'admin'  && currentEntry.Email_id !== userEmailId) {
+    return res.status(403).send({ error: "Forbidden: You do not have permission to update this record" });
+  }
+
+
     // Merge new values with current values
     const updatedEntry = {
       Institution_Name: Institution_Name ?? currentEntry.Institution_Name,
       Degree: Degree ?? currentEntry.Degree,
       Field_of_Study: Field_of_Study ?? currentEntry.Field_of_Study,
-      Year_of_Graduation: Year_of_Graduation ?? currentEntry.Year_of_Graduation
+      Year_of_Graduation: Year_of_Graduation ?? currentEntry.Year_of_Graduation,
+      Email_id: Email_id ?? currentEntry.Email_id
     };
 
     await conn.query(
-      'UPDATE Education SET Institution_Name = ?, Degree = ?, Field_of_Study = ?, Year_of_Graduation = ? WHERE Education_id = ?',
-      [updatedEntry.Institution_Name, updatedEntry.Degree, updatedEntry.Field_of_Study, updatedEntry.Year_of_Graduation, id]
+      'UPDATE Education SET Institution_Name = ?, Degree = ?, Field_of_Study = ?, Year_of_Graduation = ?,Email_id = ?  WHERE Education_id = ?',
+      [updatedEntry.Institution_Name, updatedEntry.Degree, updatedEntry.Field_of_Study, updatedEntry.Year_of_Graduation,updatedEntry.Email_id, id]
     );
 
     return res.status(200).send({ success: true, message: "Education updated successfully" });

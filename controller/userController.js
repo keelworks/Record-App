@@ -2,6 +2,8 @@ import { validationResult } from 'express-validator'
 import bcryptjs from 'bcryptjs'
 import conn from '../config/dbConnection.js'
 import jwt from 'jsonwebtoken'
+import randomstring from 'randomstring'
+import sendMail from '../helper/sendMail.js'
 
 const { JWT_SCRETE } = process.env
 
@@ -38,6 +40,8 @@ export const register = async (req, res) => {
 
 
 }
+
+
 export const login = async (req, res) => {
   const errors = validationResult(req);
   const { Email_id, Password } = req.body;
@@ -48,12 +52,12 @@ export const login = async (req, res) => {
 
   try {
     const [result] = await conn.query(
-      'SELECT * FROM User WHERE Email_id = ? ',
+      'SELECT * FROM Participant WHERE Email_id = ? ',
       [Email_id]
     );
 
     if (!result.length) {
-      return res.status(401).send({ msg: 'Email or password is incorrect' });
+      return res.status(401).send({ msg: 'Cannot find email' });
     }
 
     const match = await bcryptjs.compare(Password, result[0]['Password']);
@@ -63,9 +67,9 @@ export const login = async (req, res) => {
 
     // Create the token including email in the payload
     const token = jwt.sign(
-      { id: result[0]['ID'], email: result[0]['Email_id'] }, // Ensure email is included here
+      { id: result[0]['ID'], email: result[0]['Email_id'], role: result[0]['Role'] }, 
       JWT_SCRETE,
-      { expiresIn: '4hr' }
+      { expiresIn: '6h' }
     );
 
     // Log the token to verify
@@ -133,11 +137,12 @@ export const forgetPassword = async (req, res) => {
 
   try {
     // Check if the user exists
-    const [rows] = await conn.query('SELECT * FROM User WHERE Email_id = ? LIMIT 1', [Email_id]);
+    const [rows] = await conn.query('SELECT * FROM Participant WHERE Email_id = ? LIMIT 1', [Email_id]);
+    console.log("🚀 ~ forgetPassword ~ rows:", rows)
     const token = jwt.sign(
       { id: rows[0]['ID'], email: rows[0]['Email_id'] }, // Ensure email is included here
       JWT_SCRETE,
-      { expiresIn: '4hr' }
+      { expiresIn: '6h' }
     );
 
     if (rows.length > 0) {
@@ -176,11 +181,11 @@ export const ResetPassword = async (req, res) => {
   try {
     jwt.verify(token, JWT_SCRETE);
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const [results] = await conn.query('UPDATE User SET Password = ? WHERE ID = ?', [hashedPassword, id]);
+    const [results] = await conn.query('UPDATE Participant SET Password = ? WHERE ID = ?', [hashedPassword, id]);
     if (results.affectedRows > 0) {
       res.send({ Status: 'Success' });
     } else {
-      res.send({ Status: 'User not found' });
+      res.send({ Status: 'Participant not found' });
     }
   } catch (err) {
     res.json({ Status: 'Error with token' });

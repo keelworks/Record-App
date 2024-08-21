@@ -1,121 +1,181 @@
 import conn from '../config/dbConnection.js'
 import formatDate from './formateDate.js';
+import bcryptjs from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+
+const { JWT_SCRETE } = process.env
 // Get all participants
 export const getAllParticipants = async (req, res) => {
-  try {
-    const query = `
-     SELECT 
-        Participant.*,
-        Projects.Project_Name AS project_name,
-        Projects.Role AS project_role,
-        Projects.Start_Date AS project_start_date,
-        Projects.End_Date AS project_end_date,
-        Projects.Description AS project_description,
-        Experience.Company_Name AS experience_company,
-        Experience.Title AS experience_title,
-        Experience.Description AS experience_description,
-        Experience.Start_Date AS experience_start_date,
-        Experience.End_Date AS experience_end_date,
-        Education.Institution_Name AS education_institution,
-        Education.Degree AS education_degree,
-        Education.Field_of_Study AS education_field_of_study,
-        Education.Year_of_Graduation AS education_year_of_graduation
-      FROM Participant
-      LEFT JOIN Projects ON Participant.Project_id = Projects.Project_id
-      LEFT JOIN Experience ON Participant.Experience_id = Experience.Experience_id
-      LEFT JOIN Education ON Participant.Education_id = Education.Education_id;
-    `;
-    const [results] = await conn.query(query);
+  const userRole =( req.user.role || '').toLowerCase();  // Extract the role from JWT
+    const userEmail = req.user.email; // Extract the email from JWT
 
-    // Fetch count of projects
-    const [countResults] = await conn.query('SELECT COUNT(*) AS total FROM Participant');
-    const totalProjects = countResults[0].total;
-    const response = results.map(participant => ({
-      Email_id: participant.Email_id,
-      First_Name: participant.First_Name,
-      Last_Name: participant.Last_Name,
-      Password: participant.Password,
-      Mobile: participant.Mobile,
-      Date_of_Birth: participant.Date_of_Birth,
-      Address: participant.Address,
-      Gender: participant.Gender,
-      Race_Ethnicity: participant.Race_Ethnicity,
-      Visa_Status: participant.Visa_Status,
-      Disability: participant.Disability,
-      Veteran_Status: participant.Veteran_Status,        
-      TimeZone: participant.TimeZone,
-      project: {
-        project_id: participant.Project_id,
-        project_name: participant.project_name,
-        role: participant.project_role,
-        start_date: participant.project_start_date,
-        end_date: participant.project_end_date,
-        description: participant.project_description
-      },
-      experience: {
-        experience_id: participant.Experience_id,
-        company_name: participant.experience_company,
-        title: participant.experience_title,
-        description: participant.experience_description,
-        start_date: participant.experience_start_date,
-        end_date: participant.experience_end_date
-      },
-      education: {
-        education_id: participant.Education_id,
-        institution_name: participant.education_institution,
-        degree: participant.education_degree,
-        field_of_study: participant.education_field_of_study,
-        year_of_graduation: participant.education_year_of_graduation
-      }
-    }));
+    let query = '';
+    let countQuery = '';
+    let queryParams = [];
 
-    return res.status(200).send({ success: true, data: response, total: totalProjects });
-  } catch (err) {
-    console.error("Error fetching participants:", err);
-    return res.status(500).send({ error: "Internal server error" });
-  }
+    // If the user is an admin, fetch all participants
+    if (userRole === 'admin') {
+        query = `
+            SELECT 
+                P.Email_id,
+                P.First_Name,
+                P.Last_Name,
+                P.Role,
+                P.Mobile,
+                P.Date_of_Birth,
+                P.Address,
+                P.Gender,
+                P.Race_Ethnicity,
+                P.Visa_Status,
+                P.Disability,
+                P.Veteran_Status,
+                P.TimeZone,
+                -- Project details
+                JSON_OBJECT(
+                    'Project_id', PR.Project_id,
+                    'Project_Name', PR.Project_Name,
+                    'Role', PR.Role,
+                    'Stage', PR.Stage,
+                    'Project_manager', PR.Project_manager,
+                    'Start_Date', PR.Start_Date,
+                    'End_Date', PR.End_Date,
+                    'Description', PR.Description
+                ) AS Project,
+                -- Experience details
+                JSON_OBJECT(
+                    'Experience_id', E.Experience_id,
+                    'Company_Name', E.Company_Name,
+                    'Title', E.Title,
+                    'Description', E.Description,
+                    'Start_Date', E.Start_Date,
+                    'End_Date', E.End_Date
+                ) AS Experience,
+                -- Education details
+                JSON_OBJECT(
+                    'Education_id', ED.Education_id,
+                    'Institution_Name', ED.Institution_Name,
+                    'Degree', ED.Degree,
+                    'Field_of_Study', ED.Field_of_Study,
+                    'Year_of_Graduation', ED.Year_of_Graduation
+                ) AS Education
+            FROM 
+                Participant P
+            LEFT JOIN 
+                Projects PR ON P.Project_id = PR.Project_id
+            LEFT JOIN 
+                Experience E ON P.Experience_id = E.Experience_id
+            LEFT JOIN 
+                Education ED ON P.Education_id = ED.Education_id;
+        `;
+        countQuery = `SELECT COUNT(*) AS total_count FROM Participant`; // Count all participants
+    } else {
+        // Regular user sees only their own records
+        query = `
+            SELECT 
+                P.Email_id,
+                P.First_Name,
+                P.Last_Name,
+                P.Role,
+                P.Mobile,
+                P.Date_of_Birth,
+                P.Address,
+                P.Gender,
+                P.Race_Ethnicity,
+                P.Visa_Status,
+                P.Disability,
+                P.Veteran_Status,
+                P.TimeZone,
+                -- Project details
+                JSON_OBJECT(
+                    'Project_id', PR.Project_id,
+                    'Project_Name', PR.Project_Name,
+                    'Role', PR.Role,
+                    'Stage', PR.Stage,
+                    'Project_manager', PR.Project_manager,
+                    'Start_Date', PR.Start_Date,
+                    'End_Date', PR.End_Date,
+                    'Description', PR.Description
+                ) AS Project,
+                -- Experience details
+                JSON_OBJECT(
+                    'Experience_id', E.Experience_id,
+                    'Company_Name', E.Company_Name,
+                    'Title', E.Title,
+                    'Description', E.Description,
+                    'Start_Date', E.Start_Date,
+                    'End_Date', E.End_Date
+                ) AS Experience,
+                -- Education details
+                JSON_OBJECT(
+                    'Education_id', ED.Education_id,
+                    'Institution_Name', ED.Institution_Name,
+                    'Degree', ED.Degree,
+                    'Field_of_Study', ED.Field_of_Study,
+                    'Year_of_Graduation', ED.Year_of_Graduation
+                ) AS Education
+            FROM 
+                Participant P
+            LEFT JOIN 
+                Projects PR ON P.Project_id = PR.Project_id
+            LEFT JOIN 
+                Experience E ON P.Experience_id = E.Experience_id
+            LEFT JOIN 
+                Education ED ON P.Education_id = ED.Education_id
+            WHERE P.Email_id = ?;
+        `;
+        queryParams.push(userEmail); // Add logged-in user's email as parameter
+        countQuery = `SELECT COUNT(*) AS total_count FROM Participant WHERE Email_id = ?`; // Count only the user's own record
+        queryParams.push(userEmail); // Add the email for the count query
+    }
+
+    try {
+        // Run the query and the count query
+        const [rows] = await conn.query(query, queryParams); // Fetch participant data
+        const [countResult] = await conn.query(countQuery, queryParams); // Fetch total count
+
+        const totalCount = countResult[0].total_count || 0;
+
+        res.json({
+            participants: rows,
+            total: totalCount
+        });
+    } catch (error) {
+        console.error("Error fetching participants:", error);
+        res.status(500).send({ error: "Internal server error" });
+    }
 };
+
 
 // Add a new participant
 export const addParticipant = async (req, res) => {
   const {
-    Email_id, First_Name, Last_Name, Password, Mobile, Date_of_Birth, Address, Gender, Race_Ethnicity,
-    Visa_Status, Disability, Veteran_Status, Project_id, Experience_id, Education_id
+    Email_id, First_Name, Last_Name, Password, Role, Mobile, Date_of_Birth, Address, Gender, Race_Ethnicity,
+    Visa_Status, Disability, Veteran_Status, TimeZone
   } = req.body;
 
   try {
-    // Format the date to match SQL DATE format (YYYY-MM-DD)
-    const DateOfBirth = formatDate(Date_of_Birth);
+    // Hash the password
+    const hashedPassword = await bcryptjs.hash(Password, 10);
+    const formattedDOB = formatDate(Date_of_Birth);
 
-    // Check for foreign key constraints
-    const [project] = await conn.query('SELECT Project_id FROM Projects WHERE Project_id = ?', [Project_id]);
-    const [experience] = await conn.query('SELECT Experience_id FROM Experience WHERE Experience_id = ?', [Experience_id]);
-    const [education] = await conn.query('SELECT Education_id FROM Education WHERE Education_id = ?', [Education_id]);
-
-    if (Project_id && project.length === 0) {
-      return res.status(400).send({ error: "Invalid Project_id" });
-    }
-    if (Experience_id && experience.length === 0) {
-      return res.status(400).send({ error: "Invalid Experience_id" });
-    }
-    if (Education_id && education.length === 0) {
-      return res.status(400).send({ error: "Invalid Education_id" });
-    }
-
-    // Insert the participant
+    // Insert the participant into the database
     await conn.query(
-      'INSERT INTO Participant (Email_id, First_Name, Last_Name, Password, Mobile, Date_of_Birth, Address, Gender, Race_Ethnicity, Visa_Status, Disability, Veteran_Status, Project_id, Experience_id, Education_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [Email_id, First_Name, Last_Name, Password, Mobile, DateOfBirth, Address, Gender, Race_Ethnicity, Visa_Status, Disability, Veteran_Status, Project_id, Experience_id, Education_id]
+      'INSERT INTO Participant (Email_id, First_Name, Last_Name, Password, Role, Mobile, Date_of_Birth, Address, Gender, Race_Ethnicity, Visa_Status, Disability, Veteran_Status, TimeZone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [Email_id, First_Name, Last_Name, hashedPassword, Role, Mobile, formattedDOB, Address, Gender, Race_Ethnicity, Visa_Status, Disability, Veteran_Status, TimeZone]
     );
-    return res.status(201).send({ success: true, message: "Participant added successfully" });
 
-  } catch (err) {
-    console.error("Error adding participant:", err);
-    if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-      return res.status(400).send({ error: "Invalid foreign key reference" });
-    }
-    return res.status(500).send({ error: "Internal server error" });
+    // Create JWT token with email and role
+    // const token = jwt.sign({ Email_id, Role }, JWT_SCRETE, { expiresIn: '6h' });
+
+    // Send response with the generated token
+    return res.status(201).send({ success: true, message: "Participant added successfully" });
+  } catch (error) {
+    // Error handling
+    console.error(error);
+    return res.status(500).send({ success: false, message: "Failed to add participant" });
   }
+
+
 };
 
 
@@ -123,32 +183,37 @@ export const addParticipant = async (req, res) => {
 export const updateParticipant = async (req, res) => {
   const { id } = req.params;
   const {
-    First_Name, Last_Name, Password, Mobile, Date_of_Birth, Address, Gender, Race_Ethnicity,
-    Visa_Status, Disability, Veteran_Status, Project_id, Experience_id, Education_id
+    First_Name, Last_Name, Password, Role, Mobile, Date_of_Birth, Address, Gender, Race_Ethnicity,
+    Visa_Status, Disability, Veteran_Status, TimeZone,Project_id,Experience_id,Education_id
   } = req.body;
-
+  const userRole =(req.user.role || '').toLowerCase(); 
+  const userEmailId = req.user.email;
   try {
-    // Fetch the existing participant data
-    const [existingParticipants] = await conn.query('SELECT * FROM Participant WHERE Email_id = ?', [id]);
+    const [existingParticipants] = await conn.query('SELECT * FROM Participant WHERE ID = ?', [id]);
     if (existingParticipants.length === 0) {
       return res.status(404).send({ error: "Participant not found" });
     }
 
     const existingParticipant = existingParticipants[0];
+    if (userRole !== 'admin'  && existingParticipant.Email_id !== userEmailId) {
+      return res.status(403).send({ error: "Forbidden: You do not have permission to update this record" });
+    }
 
     // Merge existing data with new data
     const updatedParticipant = {
       First_Name: First_Name ?? existingParticipant.First_Name,
       Last_Name: Last_Name ?? existingParticipant.Last_Name,
-      Password: Password ?? existingParticipant.Password,
+      Password: Password ? await bcryptjs.hash(Password, 10) : existingParticipant.Password,
       Mobile: Mobile ?? existingParticipant.Mobile,
-      Date_of_Birth: Date_of_Birth ?? existingParticipant.Date_of_Birth,
+      Role: Role ?? existingParticipant.Role,
+      Date_of_Birth: Date_of_Birth ? formatDate(Date_of_Birth) : existingParticipant.Date_of_Birth,
       Address: Address ?? existingParticipant.Address,
       Gender: Gender ?? existingParticipant.Gender,
       Race_Ethnicity: Race_Ethnicity ?? existingParticipant.Race_Ethnicity,
       Visa_Status: Visa_Status ?? existingParticipant.Visa_Status,
       Disability: Disability ?? existingParticipant.Disability,
       Veteran_Status: Veteran_Status ?? existingParticipant.Veteran_Status,
+      TimeZone: TimeZone ?? existingParticipant.TimeZone,
       Project_id: Project_id ?? existingParticipant.Project_id,
       Experience_id: Experience_id ?? existingParticipant.Experience_id,
       Education_id: Education_id ?? existingParticipant.Education_id
@@ -177,12 +242,11 @@ export const updateParticipant = async (req, res) => {
 
     // Update the participant
     await conn.query(
-      'UPDATE Participant SET First_Name = ?, Last_Name = ?, Password = ?, Mobile = ?, Date_of_Birth = ?, Address = ?, Gender = ?, Race_Ethnicity = ?, Visa_Status = ?, Disability = ?, Veteran_Status = ?, Project_id = ?, Experience_id = ?, Education_id = ? WHERE Email_id = ?',
+      'UPDATE Participant SET First_Name = ?, Last_Name = ?, Password = ?, Mobile = ?, Role= ?,Date_of_Birth = ?, Address = ?, Gender = ?, Race_Ethnicity = ?, Visa_Status = ?, Disability = ?, Veteran_Status = ?,TimeZone=?,Project_id=?,Experience_id=?,Education_id=? WHERE ID = ?',
       [
-        updatedParticipant.First_Name, updatedParticipant.Last_Name, updatedParticipant.Password, updatedParticipant.Mobile,
+        updatedParticipant.First_Name, updatedParticipant.Last_Name, updatedParticipant.Password, updatedParticipant.Mobile, updatedParticipant.Role,
         updatedParticipant.Date_of_Birth, updatedParticipant.Address, updatedParticipant.Gender, updatedParticipant.Race_Ethnicity,
-        updatedParticipant.Visa_Status, updatedParticipant.Disability, updatedParticipant.Veteran_Status, updatedParticipant.Project_id,
-        updatedParticipant.Experience_id, updatedParticipant.Education_id, id
+        updatedParticipant.Visa_Status, updatedParticipant.Disability, updatedParticipant.Veteran_Status, updatedParticipant.TimeZone, updatedParticipant.Project_id,updatedParticipant.Education_id,updatedParticipant.Experience_id,id
       ]
     );
 
@@ -194,12 +258,31 @@ export const updateParticipant = async (req, res) => {
 };
 // Delete a participant
 export const deleteParticipant = async (req, res) => {
-  const { id } = req.params;
+  const { Email_id } = req.params;
   try {
-    await conn.query('DELETE FROM Participant WHERE Email_id = ?', [id]);
+    await conn.query('DELETE FROM Participant WHERE Email_id = ?', [Email_id]);
     return res.status(200).send({ success: true, message: "Participant deleted successfully" });
   } catch (err) {
     console.error("Error deleting participant:", err);
     return res.status(500).send({ error: "Internal server error" });
   }
 };
+
+export const updateKeys = async (req, res) => {
+  const { Project_id, Experience_id, Education_id } = req.body;
+  const Email_id = req.user.email
+
+  try {
+    // Update the participant's project, experience, and education IDs
+    await conn.query(
+      `UPDATE Participant SET Project_id = ?, Experience_id = ?, Education_id = ?
+            WHERE Email_id = ?`,
+      [Project_id, Experience_id, Education_id, Email_id]
+    );
+
+    return res.status(200).send({ success: true, message: "Participant updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ success: false, message: "Failed to update participant" });
+  }
+}
