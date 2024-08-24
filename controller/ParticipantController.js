@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 // Get all participants
 
 export const getAllParticipants = async (req, res) => {
-  const userRole = (req.user.role || '').toLowerCase(); 
+    const userRole = (req.user.role || '').toLowerCase(); 
     const userEmail = req.user.email;
     try {
       let participantsQuery = 'SELECT * FROM Participant';
@@ -49,7 +49,7 @@ export const getAllParticipants = async (req, res) => {
         const [experiences] = await conn.query(experiencesQuery, [participant[0].ID]);
         const [education] = await conn.query(educationQuery, [participant[0].ID]);
 
-        const [totalOtherParticipants] = await conn.query('SELECT COUNT(*) AS total FROM Participant WHERE Email_id != ?', [userEmail]);
+        const [totalOtherParticipants] = await conn.query('SELECT COUNT(*) AS total FROM Participant WHERE Email_id = ?', [userEmail]);
         return res.status(200).send({
           ...participant[0],
           Projects: projects,
@@ -131,6 +131,18 @@ export const updateParticipant = async (req, res) => {
         updatedParticipant.Visa_Status, updatedParticipant.Disability, updatedParticipant.Veteran_Status, updatedParticipant.TimeZone,id
       ]
     );
+    if (Role) {
+      const newToken = jwt.sign(
+        { id: existingParticipant.ID, email: existingParticipant.Email_id, role: Role },
+        process.env.JWT_SCRETE,
+        { expiresIn: '6h' }
+      );
+      return res.status(200).send({
+        success: true,
+        message: "Participant updated successfully",
+        token: newToken  // Send the new token to the client
+      });
+    }
 
     return res.status(200).send({ success: true, message: "Participant updated successfully" });
   } catch (err) {

@@ -6,7 +6,6 @@ import './config/dbConnection.js'
 import bodyParser from 'body-parser'
 import router from './routes/index.js'
 
-
 const app = express()
 // app.use(session({ secret: process.env.JWT_SCRETE, resave: false, saveUninitialized: true, cookie: { secure: false } }));
 
@@ -19,7 +18,6 @@ app.use(cors({ origin: 'http://localhost:5173',  methods: 'GET,POST,PUT,DELETE',
 
 app.use('/api', router)
 
-
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   const statusCode = err.statusCode || 500;
@@ -27,7 +25,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({ message });
 
 })
-
 const PORT = 3000
 app.listen(PORT, () => {
   console.log(`server is running on ${PORT}`);
