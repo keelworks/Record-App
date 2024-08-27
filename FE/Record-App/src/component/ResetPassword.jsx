@@ -16,7 +16,7 @@ const ResetPassword = () => {
       setError("Password is required")
     }
     try {
-      await axios.post(`${API_BASE_URL}/api/reset-password/${id}/${token}`, {
+      await axios.post(`${API_BASE_URL}/api/user/reset-password/${id}/${token}`, {
          password,
       }).then((res)=>{
         console.log("res",res.data);

@@ -11,16 +11,35 @@ import { API_BASE_URL } from '../../config/apiConfig'
 const ParticipantRecordApp = () => {
   const location = useLocation();
   const { state } = location;
-  const project_name = state?.project_name;
+  const {project_name,Project_id} = state;
 
   const [participant,SetParticipant]=useState()
+  console.log("🚀 ~ ParticipantRecordApp ~ participant:", participant)
 
  
 
   useEffect(()=>{
     const getData=async()=>{
-      const particpant=await axios.get(`${API_BASE_URL}/api/getAllParticipant`)
-      SetParticipant(particpant.data.data)
+      try {
+        const token = localStorage.getItem('jwt');
+  
+        if (!token) {
+          throw new Error('Token not found');
+        }
+  
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      const participant=await axios.get(`${API_BASE_URL}/api/participant/getAllParticipant`,config)
+      const data=participant.data.participants?.filter((p)=>{  
+        return p.Projects.some((project) => project.Project_id === Project_id);
+      })
+      SetParticipant(data)
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
 
     }
     getData()

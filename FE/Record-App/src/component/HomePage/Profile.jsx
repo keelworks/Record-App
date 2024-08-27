@@ -105,7 +105,8 @@ const Profile = ({ activeStep }) => {
 
   const location = useLocation();
   const { state } = location;
-  const participant = state?.participant;
+  const participant = state?.participant
+  console.log("🚀 ~ Profile ~ participant:", participant)
 
   const { value: value1, reset: resetValue1 } = useCountUp({
     isCounting: isLoading,
@@ -126,7 +127,14 @@ const Profile = ({ activeStep }) => {
     "Interviews",
 
   ]
-  
+
+
+  const formatDateRange = (startDate, endDate) => {
+    const start = new Date(startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    const end = new Date(endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+
+    return `${start} - ${end}`;
+  };
   const { value: value2, reset } = useCountUp({
     isCounting: true,
     duration: 1,
@@ -163,7 +171,7 @@ const Profile = ({ activeStep }) => {
           <div className='flex flex-col md:flex-row lg:flex-row items-center justify-between w-full  mb-8 h-auto  '>
             <div className='w-full md:w-3/5 lg:w-3/5 mt-4 lg:mt-0 md:mx-8 '>
               <span className='font-semibold text-3xl sm:text-3xl mx-10 md:ml-0 lg:text-[40px] text-black'  ><FontAwesomeIcon icon={faLessThan} className='text-black w-[24px] h-[24px] mr-3 mb-1' />
-              {participant.First_Name}  </span>
+                {participant.First_Name}  </span>
             </div>
             <div className='flex w-full md:w-2/5 lg:w-2/5  justify-start items-center text-center md:justify-center lg:justify-center mt-4 md:mt-0  ml-16 md:ml-0'>
               <div className='bg-[#0D5299] w-[100px] md:w-[208px] flex justify-center items-center border rounded-lg h-[56px] mr-4'>
@@ -192,7 +200,7 @@ const Profile = ({ activeStep }) => {
                       fontFamily: "Montserrat, sans-serif",
                       color: "black",
                       fontSize: "16px",// Just text label (COMPLETED)
-                     
+
                     },
                   }}>{label}</StepLabel>
                 </Step>
@@ -213,7 +221,7 @@ const Profile = ({ activeStep }) => {
                   <div className='text-[20px] text-black'>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2 '>
                       <div style={{ marginLeft: '20px' }}>Role</div>
-                      <div style={{ marginRight: '20px' }}>{participant.project.role}</div>
+                      <div style={{ marginRight: '20px' }}>{participant.Projects[0].Role}</div>
                     </div>
                     <div className='flex justify-between flex-row  items-start md:items-center md:my-2'>
                       <div style={{ marginLeft: '20px' }}>Email</div>
@@ -275,21 +283,17 @@ const Profile = ({ activeStep }) => {
                 </div>
                 <div className='text-[20px] text-black'>
 
-                  <div className='flex justify-between my-2  sm:flex-row items-center'>
-                    <div style={{ marginLeft: '20px' }}>{participant.experience.title}</div>
-                    <div >{participant.experience.company_name}</div>
-                    <div style={{ marginRight: '20px' }}>July 2023 - Dec 2023</div>
-                  </div>
-                  <div className='flex justify-between my-2  sm:flex-row items-center'>
-                    <div style={{ marginLeft: '20px' }}>Project Management Co-op</div>
-                    <div >Northeastern University ITS</div>
-                    <div style={{ marginRight: '20px' }}>Feb 2023 - May 2023</div>
-                  </div>
-                  <div className='flex justify-between my-2  sm:flex-row items-center'>
-                    <div style={{ marginLeft: '20px' }}>Project Management Intern</div>
-                    <div >XY Education Foundation</div>
-                    <div style={{ marginRight: '20px' }}>Sept 2022 - Jan 2023</div>
-                  </div>
+                  {participant?.Experiences?.map((exp) => (
+                    <>
+                      <div className='flex justify-between my-2  sm:flex-row items-center'>
+                        <div style={{ marginLeft: '20px' }}>{exp.Title}</div>
+                        <div >{exp.Company_Name}</div>
+                        <div style={{ marginRight: '20px' }}>{formatDateRange(exp.Start_Date, exp.End_Date)}</div>
+                      </div>
+                    </>
+                  ))}
+
+
                 </div>
               </div>
             </div>
@@ -304,18 +308,20 @@ const Profile = ({ activeStep }) => {
 
                 <div className='pb-2 text-[20px] text-black'>
 
-                  <div className='grid grid-cols-4 gap-2 mt-2'>
-                    <div className='text-left pl-4'>Computer Science</div>
-                    <div className='text-center'>Master of Science</div>
-                    <div className='text-center'>Northeastern University</div>
-                    <div className='text-right pr-4'>Aug 2021 - Dec 2023</div>
-                  </div>
-                  <div className='grid grid-cols-4 gap-2 mt-2'>
-                    <div className='text-left pl-4'>Economics</div>
-                    <div className='text-center'>Bachelor of Arts</div>
-                    <div className='text-center'>Purdue University</div>
-                    <div className='text-right pr-4'>Aug 2017 - May 2021</div>
-                  </div>
+                  {
+                    participant.Education?.map((edu) => (
+                      <>
+                        <div className='grid grid-cols-4 gap-2 mt-2'>
+                          <div className='text-left pl-4'>{edu.Field_of_Study}</div>
+                          <div className='text-center'>{edu.Degree}</div>
+                          <div className='text-center'>{edu.Institution_Name}</div>
+                          <div className='text-right pr-4'>{edu.Year_of_Graduation}</div>
+                        </div>
+                      </>
+                    ))
+                  }
+
+
                 </div>
               </div>
             </div>

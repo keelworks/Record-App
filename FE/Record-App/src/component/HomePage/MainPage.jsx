@@ -10,7 +10,6 @@ const MainPage = () => {
   const [participant ,setParticipant]=useState()
   const [projectTotal ,setProjectTotal]=useState()
   const [project ,setProject]=useState()
-  console.log("🚀 ~ MainPage ~ project:", project)
   const tableRecord = [
     {
       label: "No",
@@ -28,16 +27,35 @@ const MainPage = () => {
     }
   ];
   useEffect(()=>{
-    const getData=async()=>{
-      const particpant=await axios.get(`${API_BASE_URL}/api/getAllParticipant`)
-      const project=await axios.get(`${API_BASE_URL}/api/getAllProject`)
-      setParticipant(particpant.data.total)
-      setProject(project.data.data)
-      setProjectTotal(project.data.total)
-
-    }
-    getData()
-
+    const getData = async () => {
+      try {
+        // Retrieve token from localStorage
+        const token = localStorage.getItem('jwt');
+  
+        if (!token) {
+          throw new Error('Token not found');
+        }
+  
+        // Set the token in the Authorization header
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+  
+        // Make API requests with the config that includes the token
+        const participant = await axios.get(`${API_BASE_URL}/api/participant/getAllParticipant`, config);
+        const project = await axios.get(`${API_BASE_URL}/api/project/getAllProject`, config);
+  
+        setParticipant(participant.data.total);
+        setProject(project.data.data);
+        setProjectTotal(project.data.total);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    getData();
   },[participant,projectTotal])
 
   return (

@@ -33,7 +33,7 @@ const Login = () => {
       return;
     }
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/login`, {
+      const res = await axios.post(`${API_BASE_URL}/api/user/login`, {
         Email_id: email,
         Password: password,
       });
@@ -128,21 +128,21 @@ const Login = () => {
               {/* Forgot Password Form */}
 
               {/* Or */}
-              <div className='w-4/5 flex justify-between items-center mb-2' >
+              {/* <div className='w-4/5 flex justify-between items-center mb-2' >
                 <div className='w-full h-[1px] bg-[#134C88]'></div>
                 <p className='text-[24px] mx-4 text-[#000000]'>or</p>
                 <div className='w-full h-[1px] bg-[#134C88]'></div>
-              </div>
+              </div> */}
 
               {/* Continue with Google */}
-              <div className='w-4/5 flex border rounded-md p-3 border-black items-center justify-between mb-6 mt-8 cursor-pointer' onClick={handleGoogleClick}>
+              {/* <div className='w-4/5 flex border rounded-md p-3 border-black items-center justify-between mb-6 mt-8 cursor-pointer' onClick={handleGoogleClick}>
                 <div className=' w-1/5 sm:text-sm flex justify-end mr-4 '>
                   <img src={google} alt="Google logo" />
                 </div>
                 <div className='w-4/5 ml-4 text-[16px] '>
                   <p>Continue with Google</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </form>

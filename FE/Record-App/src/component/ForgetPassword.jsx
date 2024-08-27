@@ -17,7 +17,7 @@ const ForgetPassword = () => {
 
     }
     try {
-      await axios.post(`${API_BASE_URL}/api/forget-password`, {
+      await axios.post(`${API_BASE_URL}/api/user/forget-password`, {
         Email_id: email,
       }).then((res) => {
         console.log("res", res.data);
@@ -27,7 +27,7 @@ const ForgetPassword = () => {
       })
 
     } catch (error) {
-      console.log(err);
+      console.log(error);
 
     }
 

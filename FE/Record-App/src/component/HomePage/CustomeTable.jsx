@@ -56,9 +56,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const CustomeTable = ({ data, participant, project_name }) => {
+  const filteredParticipants = participant?.filter((p) => 
+    p.Projects.some(project => project.Project_Name === project_name)
+  );
   const navigate = useNavigate()
-  const handleClick = (project_name, i) => {
-    navigate("/participantApp", { state: { project_name } });
+
+  const handleClick = (project_name,Project_id) => {
+    navigate(`/participantApp/${Project_id}`, { state: { project_name,Project_id} });
 
   }
   const handleParticipant = (participant, i) => {
@@ -89,21 +93,25 @@ const CustomeTable = ({ data, participant, project_name }) => {
           </TableHead>
           <TableBody>
             {
-
               project_name ?
-                participant?.map((participant, index) => (
-                  <StyledTableRow className='cursor-pointer' onClick={() => handleParticipant(participant, index)}>
-                    <StyledTableCell align='center' >{ }</StyledTableCell>
+              filteredParticipants?.map((participant, index) => {
+                  console.log("🚀 ~ participant?.map ~ participant:", participant.Projects.Role)
+                  return(
+                    <StyledTableRow className='cursor-pointer' onClick={() => handleParticipant(participant, index+1)}>
+                    <StyledTableCell align='center' >{index+1 }</StyledTableCell>
                     <StyledTableCell align='center'>{participant.First_Name}</StyledTableCell>
-                    <StyledTableCell align='center'>{participant.project.role}</StyledTableCell>
+                    <StyledTableCell align='center'>{
+                        participant.Projects.find(
+                          project => project.Project_Name === project_name
+                        )?.Role
+                      }</StyledTableCell>
                     <StyledTableCell align='center'>{participant.Email_id}</StyledTableCell>
                   </StyledTableRow>
-
-                ))
+                  )
+                })
                 :
-
                 data?.map((project, index) => (
-                  <StyledTableRow onClick={() => handleClick(project.Project_Name, index)} className='cursor-pointer'>
+                  <StyledTableRow onClick={() => handleClick(project.Project_Name, project.Project_id)} className='cursor-pointer'>
                     <StyledTableCell align='center' >{project.Project_id}</StyledTableCell>
                     <StyledTableCell align='center'>{project.Project_Name}</StyledTableCell>
                     <StyledTableCell align='center'>{project.Stage}</StyledTableCell>

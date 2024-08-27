@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/participantApp',
+    path: '/participantApp/:id',
     element: (
       <ProtectedRoute>
         <ParticipantRecordApp />
